@@ -3,10 +3,16 @@ package asvid.github.io.roomapp
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-
-import kotlinx.android.synthetic.main.activity_main.*
+import asvid.github.io.roomapp.api.Api
+import asvid.github.io.roomapp.api.pojo.Gist
+import kotlinx.android.synthetic.main.activity_main.fab
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +25,23 @@ class MainActivity : AppCompatActivity() {
       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
           .setAction("Action", null).show()
     }
+
+    initGistList();
+
+    Api.gitHubService.listRepos().enqueue(object : Callback<List<Gist>> {
+      override fun onFailure(call: Call<List<Gist>>?, t: Throwable?) {
+        Log.d("MAIN_ACTIVITY", "getting Gist FAIL $t")
+      }
+
+      override fun onResponse(call: Call<List<Gist>>?, response: Response<List<Gist>>?) {
+        Log.d("MAIN_ACTIVITY", "getting Gist success $response")
+        Log.d("MAIN_ACTIVITY", "getting Gist success ${response?.body()}")
+      }
+    })
+  }
+
+  private fun initGistList() {
+
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
