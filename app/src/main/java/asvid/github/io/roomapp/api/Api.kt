@@ -19,6 +19,6 @@ object Api {
       .addConverterFactory(GsonConverterFactory.create(gson))
       .build()
 
-  val gitHubService = retrofit.create(GitHubService::class.java)
+  val gitHub = retrofit.create(GitHub::class.java)
 
 }
