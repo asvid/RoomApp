@@ -1,20 +1,13 @@
 package asvid.github.io.roomapp.di
 
 import asvid.github.io.roomapp.services.GistLoadService
-import dagger.Component
 import dagger.Module
-import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 
-@Module(includes = [DataModule::class])
-class ServiceModule(var gistLoadService: GistLoadService) {
+@Module
+internal abstract class ServiceBuilderModule {
 
-  @Provides
-  fun provideGistLoadService(): GistLoadService {
-    return gistLoadService
-  }
-}
+    @ContributesAndroidInjector
+    internal abstract fun contributeGistLoadService(): GistLoadService
 
-@Component(modules = [ServiceModule::class])
-internal interface ServiceComponent {
-  fun inject(service: GistLoadService)
 }
