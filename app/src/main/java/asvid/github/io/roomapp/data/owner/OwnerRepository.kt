@@ -11,7 +11,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
-class OwnerRepository @Inject constructor(var ownerDao: OwnerDao) :
+class OwnerRepository @Inject constructor(private var ownerDao: OwnerDao) :
     RxCrudRepository<OwnerModel, Long> {
 
   override fun delete(model: OwnerModel): Completable {
@@ -20,8 +20,7 @@ class OwnerRepository @Inject constructor(var ownerDao: OwnerDao) :
   }
 
   override fun deleteAll(models: Collection<OwnerModel>): Completable {
-    TODO(
-        "not implemented") //To change body of created functions use File | Settings | File Templates.
+    return Completable.fromAction { ownerDao.delete() }
   }
 
   override fun fetchAll(): Flowable<Collection<OwnerModel>> {
@@ -43,8 +42,12 @@ class OwnerRepository @Inject constructor(var ownerDao: OwnerDao) :
   }
 
   override fun saveAll(models: Collection<OwnerModel>): Single<Collection<OwnerModel>> {
-    TODO(
-        "not implemented") //To change body of created functions use File | Settings | File Templates.
+    return Single.fromCallable {
+      models.map {
+        it.id = ownerDao.insert(it.toEntity())
+      }
+      return@fromCallable fetchAll()
+    }
   }
 
 }

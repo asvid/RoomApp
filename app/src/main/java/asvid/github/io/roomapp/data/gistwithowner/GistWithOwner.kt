@@ -34,7 +34,7 @@ interface GistWithOwnerDao : GistDao, OwnerDao {
   @Transaction
   fun saveOwnerAndGist(owner: OwnerModel, gist: GistModel) {
     val ownerId = insert(owner.toEntity())
-    gist.owner.id = ownerId
+    gist.ownerId = ownerId
     insert(gist.toEntity())
   }
 

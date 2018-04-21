@@ -9,14 +9,8 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import asvid.github.io.roomapp.MainActivity
 import asvid.github.io.roomapp.R.mipmap
-import asvid.github.io.roomapp.api.Api
-import asvid.github.io.roomapp.api.pojo.Gist
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
-import asvid.github.io.roomapp.model.toModel
 import dagger.android.AndroidInjection
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class GistLoadService : Service() {
@@ -87,23 +81,9 @@ class GistLoadService : Service() {
   private fun createRunnable(): Runnable {
     return object : Runnable {
       override fun run() {
-        Api.gitHub.listRepos().enqueue(object : Callback<List<Gist>> {
-          override fun onFailure(call: Call<List<Gist>>?, t: Throwable?) {
-            //            NOOP
-            Log.e("GIST_SERVICE", "gist loading error: $t")
-          }
 
-          override fun onResponse(call: Call<List<Gist>>?,
-              response: Response<List<Gist>>?) {
-            Log.d("GIST_SERVICE", "gist loading response: ${response?.body()}")
-            response?.body()?.map {
-              val gistModel = it.toModel()
-              Log.d("GIST_SERVICE", "saving items: $gistModel | ${gistModel.owner}")
-              gistWithOwnerRepository.save(gistModel).subscribe()
-              return@map
-            }
-          }
-        })
+//        TODO: random generate gist with owner
+
         handler?.postDelayed(this, delay.toLong())
       }
     }

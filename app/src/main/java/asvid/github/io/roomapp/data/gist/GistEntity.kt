@@ -15,10 +15,7 @@ import asvid.github.io.roomapp.data.owner.OwnerEntity
       childColumns = [(GistEntity.OWNER_ID)],
       onDelete = CASCADE))])
 data class GistEntity(
-    val gistId: String,
     val description: String,
-    val comments: String,
-    val url: String,
     @NonNull val ownerId: Long,
     val starred: Boolean) {
 

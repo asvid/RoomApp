@@ -4,10 +4,14 @@ import java.io.Serializable
 
 data class GistModel(
     var id: Long?,
-    val gistId: String,
     val description: String,
-    val comments: String,
-    val url: String,
+    var ownerId: Long,
+    var starred: Boolean
+) : Serializable
+
+data class GistWithOwnerModel(
+    var id: Long?,
+    val description: String,
     val owner: OwnerModel,
     var starred: Boolean
 ) : Serializable
