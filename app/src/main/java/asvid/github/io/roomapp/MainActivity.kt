@@ -5,10 +5,15 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.gist.GistWithOwnerRepository
+import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
+import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
+import asvid.github.io.roomapp.data.owner.OwnerRepository
+import asvid.github.io.roomapp.model.GistModel
+import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.model.toModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
@@ -23,6 +28,9 @@ class MainActivity : AppCompatActivity() {
   lateinit var gistRepository: GistRepository
     @Inject set
 
+  lateinit var ownerRepository: OwnerRepository
+    @Inject set
+
   lateinit var gistWithOwnerRepository: GistWithOwnerRepository
     @Inject set
 
@@ -35,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     setSupportActionBar(toolbar)
 
     fab.setOnClickListener { view ->
+      addGist()
       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
           .setAction("Action", null).show()
     }
@@ -49,8 +58,35 @@ class MainActivity : AppCompatActivity() {
     gistList.adapter = adapter
     gistList.layoutManager = LinearLayoutManager(this)
 
-    gistWithOwnerRepository.fetchAll().subscribe {
-      adapter.updateData(it.toList().toModel())
+    ownerRepository.fetchAll().subscribe {
+      Log.d("MAIN_ACTIVITY", "new Owner: $it")
+    }
+
+    gistWithOwnerRepository.fetchAll().subscribe(
+        { onNext -> handleIncomingShit(onNext) },
+        { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
+        { Log.d("MAIN_ACTIVITY", "onComplete") }
+    )
+
+    gistRepository.fetchAll().subscribe {
+      Log.d("MAIN_ACTIVITY", "new Gist: $it")
+    }
+  }
+
+  private fun handleIncomingShit(onNext: Collection<GistWithOwner>) {
+    Log.d("MAIN_ACTIVITY", "onNext $onNext")
+    adapter.updateData(onNext.toList().toModel())
+  }
+
+  private fun addGist() {
+    val owner = OwnerModel("Owner name", "owner url", "http://lorempixel.com/200/200/", 0)
+    ownerRepository.save(owner).subscribe { savedOwner ->
+      Log.d("MAIN_ACTIVITY", "saved owner: $savedOwner")
+      gistRepository.save(
+          GistModel(null, "some id", "desc", "comments", "url", savedOwner,
+              true)).subscribe { savedGist ->
+        Log.d("MAIN_ACTIVITY", "saved gist: $savedGist")
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 package asvid.github.io.roomapp.data.gist
 
+import android.util.Log
 import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.model.convertToModel
@@ -32,9 +33,10 @@ class GistRepository @Inject constructor(var gistDao: GistDao) :
   }
 
   override fun save(model: GistModel): Single<GistModel> {
+    Log.d("GIST_REPO", "save: $model")
     return Single.fromCallable {
       val id = gistDao.insert(model.toEntity())
-      model.id = id.toString()
+      model.id = id
       model
     }
   }

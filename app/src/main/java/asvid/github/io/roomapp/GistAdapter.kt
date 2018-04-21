@@ -1,6 +1,7 @@
 package asvid.github.io.roomapp
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
   override fun onBindViewHolder(holder: GistViewHolder, position: Int) {
     val item = items?.get(position)
-    holder.setId(item?.id)
+    holder.setId(item?.id.toString())
     holder.setUrl(item?.url)
     holder.setDescription(item?.description)
     holder.setOwnerLogin(item?.owner?.login)
@@ -57,11 +58,10 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
     }
 
     fun setOwnerAvatarUrl(avatarUrl: String?) {
+      Log.d("GIST_HOLDER", "url: $avatarUrl")
       Glide.with(view.context)
           .load(avatarUrl)
-          .centerCrop()
           .placeholder(R.mipmap.ic_launcher)
-          .dontAnimate()
           .into(view.findViewById(R.id.gistAuthorAvatarImageView))
     }
 

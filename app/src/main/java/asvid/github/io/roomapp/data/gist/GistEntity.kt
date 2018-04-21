@@ -22,13 +22,12 @@ data class GistEntity(
     @NonNull val ownerId: Long,
     val starred: Boolean) {
 
-  companion object {
-    const val TABLE_NAME = "gist"
-    const val OWNER_ID = "ownerId"
-  }
-
   @PrimaryKey(autoGenerate = true)
   @NonNull
   var id: Long? = null
 
+  companion object {
+    const val TABLE_NAME = "gist"
+    const val OWNER_ID = "ownerId"
+  }
 }

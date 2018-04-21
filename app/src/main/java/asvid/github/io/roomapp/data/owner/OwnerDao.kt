@@ -7,6 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Update
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 
 @Dao
 interface OwnerDao {
@@ -23,6 +24,6 @@ interface OwnerDao {
   @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME}")
   fun getAllOwners(): Flowable<List<OwnerEntity>>
 
-  @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME} WHERE id=:ownerId")
-  fun findOwnerById(ownerId: Long): Flowable<OwnerEntity>
+  @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME} WHERE dbId=:ownerId")
+  fun findOwnerById(ownerId: Long): Maybe<OwnerEntity>
 }

@@ -5,8 +5,8 @@ import android.content.Context
 import asvid.github.io.roomapp.data.GistDatabase
 import asvid.github.io.roomapp.data.gist.GistDao
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.gist.GistWithOwnerDao
-import asvid.github.io.roomapp.data.gist.GistWithOwnerRepository
+import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerDao
+import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerDao
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import dagger.Module
@@ -39,7 +39,8 @@ class DataModule {
   @Singleton
   @Provides
   fun gistWithOwnerRepository(
-      ownerDao: GistWithOwnerDao): GistWithOwnerRepository = GistWithOwnerRepository(ownerDao)
+      ownerDao: GistWithOwnerDao): GistWithOwnerRepository = GistWithOwnerRepository(
+      ownerDao)
 
   @Singleton
   @Provides
