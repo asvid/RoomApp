@@ -79,12 +79,12 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun addGist() {
-    val owner = OwnerModel("Owner name", "owner url", "http://lorempixel.com/200/200/", 0)
+    val owner = OwnerModel("random login")
+    gistWithOwnerRepository.save()
     ownerRepository.save(owner).subscribe { savedOwner ->
       Log.d("MAIN_ACTIVITY", "saved owner: $savedOwner")
       gistRepository.save(
-          GistModel(null, "some id", "desc", "comments", "url", savedOwner,
-              true)).subscribe { savedGist ->
+          GistModel(null, "desc", savedOwner.id!!, false)).subscribe { savedGist ->
         Log.d("MAIN_ACTIVITY", "saved gist: $savedGist")
       }
     }

@@ -6,7 +6,7 @@ import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
 import asvid.github.io.roomapp.data.owner.OwnerEntity
 
 fun GistModel.toEntity(): GistEntity {
-  val entity = GistEntity(this.description, this.owner.id!!, this.starred)
+  val entity = GistEntity(this.description, this.ownerId, this.starred)
   this.id.let { entity.id = it }
   return entity
 }

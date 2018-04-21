@@ -9,6 +9,8 @@ import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerDao
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerDao
 import asvid.github.io.roomapp.data.owner.OwnerRepository
+import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsDao
+import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -46,4 +48,15 @@ class DataModule {
   @Provides
   fun gistWithOwnerDao(context: Context): GistWithOwnerDao = gistDatabase(
       context).gistWithOwnerDao()
+
+  @Singleton
+  @Provides
+  fun ownerWithGistsRepository(
+      ownerWithGistsDao: OwnerWithGistsDao): OwnerWithGistsRepository = OwnerWithGistsRepository(
+      ownerWithGistsDao)
+
+  @Singleton
+  @Provides
+  fun ownerWithGistsDao(context: Context): OwnerWithGistsDao = gistDatabase(
+      context).ownerWithGistDao()
 }

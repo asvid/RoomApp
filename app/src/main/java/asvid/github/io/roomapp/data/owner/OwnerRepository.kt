@@ -37,16 +37,16 @@ class OwnerRepository @Inject constructor(private var ownerDao: OwnerDao) :
       val id = ownerDao.insert(model.toEntity())
       model.id = id
       model
-
     }
   }
 
   override fun saveAll(models: Collection<OwnerModel>): Single<Collection<OwnerModel>> {
     return Single.fromCallable {
       models.map {
-        it.id = ownerDao.insert(it.toEntity())
+        val id = ownerDao.insert(it.toEntity())
+        it.id = id
       }
-      return@fromCallable fetchAll()
+      models
     }
   }
 
