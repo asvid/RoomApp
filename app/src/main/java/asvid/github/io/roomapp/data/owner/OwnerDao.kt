@@ -24,6 +24,6 @@ interface OwnerDao {
   @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME}")
   fun getAllOwners(): Flowable<List<OwnerEntity>>
 
-  @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME} WHERE dbId=:ownerId")
+  @Query("SELECT * FROM ${OwnerEntity.TABLE_NAME} WHERE ${OwnerEntity.ID}=:ownerId")
   fun findOwnerById(ownerId: Long): Maybe<OwnerEntity>
 }

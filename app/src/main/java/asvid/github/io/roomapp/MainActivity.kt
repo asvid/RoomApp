@@ -12,12 +12,13 @@ import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
-import asvid.github.io.roomapp.model.GistModel
+import asvid.github.io.roomapp.model.GistWithOwnerModel
 import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.model.toModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
 import dagger.android.AndroidInjection
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.fab
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.gistList
@@ -62,11 +63,13 @@ class MainActivity : AppCompatActivity() {
       Log.d("MAIN_ACTIVITY", "new Owner: $it")
     }
 
-    gistWithOwnerRepository.fetchAll().subscribe(
-        { onNext -> handleIncomingShit(onNext) },
-        { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
-        { Log.d("MAIN_ACTIVITY", "onComplete") }
-    )
+    gistWithOwnerRepository.fetchAll()
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            { onNext -> handleIncomingShit(onNext) },
+            { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
+            { Log.d("MAIN_ACTIVITY", "onComplete") }
+        )
 
     gistRepository.fetchAll().subscribe {
       Log.d("MAIN_ACTIVITY", "new Gist: $it")
@@ -80,13 +83,9 @@ class MainActivity : AppCompatActivity() {
 
   private fun addGist() {
     val owner = OwnerModel("random login")
-    gistWithOwnerRepository.save()
-    ownerRepository.save(owner).subscribe { savedOwner ->
-      Log.d("MAIN_ACTIVITY", "saved owner: $savedOwner")
-      gistRepository.save(
-          GistModel(null, "desc", savedOwner.id!!, false)).subscribe { savedGist ->
-        Log.d("MAIN_ACTIVITY", "saved gist: $savedGist")
-      }
+    gistWithOwnerRepository.save(
+        GistWithOwnerModel(null, "description", owner, true)).subscribe { gistWithOwner ->
+      Log.d("MAIN_ACTIVITY", "saved gist with owner: $gistWithOwner")
     }
   }
 

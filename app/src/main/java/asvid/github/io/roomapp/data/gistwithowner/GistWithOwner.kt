@@ -27,14 +27,14 @@ class GistWithOwner {
 }
 
 @Dao
-interface GistWithOwnerDao : GistDao, OwnerDao {
+abstract class GistWithOwnerDao : GistDao, OwnerDao {
 
   @Query(
-      "SELECT * from ${GistEntity.TABLE_NAME}, ${OwnerEntity.TABLE_NAME} where gist.ownerId = owner.dbId")
-  fun getGistsWithOwners(): Flowable<List<GistWithOwner>>
+      "SELECT * from ${GistEntity.TABLE_NAME}, ${OwnerEntity.TABLE_NAME} where ${GistEntity.OWNER_ID} = ${OwnerEntity.ID}")
+  abstract fun getGistsWithOwners(): Flowable<List<GistWithOwner>>
 
   @Transaction
-  fun saveOwnerAndGist(owner: OwnerModel, gist: GistModel): Single<GistWithOwnerModel> {
+  open fun saveOwnerAndGist(owner: OwnerModel, gist: GistModel): Single<GistWithOwnerModel> {
     return Single.fromCallable {
       val ownerId = insert(owner.toEntity())
       gist.ownerId = ownerId
@@ -44,11 +44,17 @@ interface GistWithOwnerDao : GistDao, OwnerDao {
   }
 
   @Transaction
-  fun saveOwnerAndGist(gistWithOwnerModel: GistWithOwnerModel) {
-    val ownerId = insert(gistWithOwnerModel.owner.toEntity())
-    val gist = GistModel(gistWithOwnerModel.id, gistWithOwnerModel.description, ownerId,
-        gistWithOwnerModel.starred)
-    insert(gist.toEntity())
+  open fun saveOwnerAndGist(gistWithOwnerModel: GistWithOwnerModel): Single<GistWithOwnerModel> {
+
+    return Single.fromCallable {
+      val ownerId = insert(gistWithOwnerModel.owner.toEntity())
+      gistWithOwnerModel.owner.id = ownerId
+      val gist = GistModel(gistWithOwnerModel.id, gistWithOwnerModel.description, ownerId,
+          gistWithOwnerModel.starred)
+      val gistId = insert(gist.toEntity())
+      GistWithOwnerModel(gistId, gistWithOwnerModel.description, gistWithOwnerModel.owner,
+          gistWithOwnerModel.starred)
+    }
   }
 
 }

@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import asvid.github.io.roomapp.GistAdapter.GistViewHolder
-import asvid.github.io.roomapp.model.GistModel
+import asvid.github.io.roomapp.model.GistWithOwnerModel
 import com.bumptech.glide.Glide
 
 class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
-  private var items: List<GistModel>? = null
+  private var items: List<GistWithOwnerModel>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GistViewHolder {
     val view = LayoutInflater.from(parent.context)
@@ -28,14 +28,12 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
   override fun onBindViewHolder(holder: GistViewHolder, position: Int) {
     val item = items?.get(position)
     holder.setId(item?.id.toString())
-    holder.setUrl(item?.url)
     holder.setDescription(item?.description)
     holder.setOwnerLogin(item?.owner?.login)
-    holder.setOwnerAvatarUrl(item?.owner?.avatarUrl)
     holder.setStarred(item?.starred)
   }
 
-  fun updateData(list: List<GistModel>) {
+  fun updateData(list: List<GistWithOwnerModel>) {
     items = list
     notifyDataSetChanged()
   }

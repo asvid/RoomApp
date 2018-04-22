@@ -14,7 +14,8 @@ class OwnerWithGists {
   @Embedded
   lateinit var owner: OwnerEntity
 
-  @Relation(parentColumn = "id", entityColumn = "ownerId", entity = GistEntity::class)
+  @Relation(parentColumn = OwnerEntity.ID, entityColumn = GistEntity.OWNER_ID,
+      entity = GistEntity::class)
   lateinit var gists: List<GistEntity>
 }
 
@@ -24,7 +25,7 @@ interface OwnerWithGistsDao {
   @Query("SELECT * from ${OwnerEntity.TABLE_NAME}")
   fun getOwnersWithGists(): Flowable<List<OwnerWithGists>>
 
-  @Query("SELECT * from ${OwnerEntity.TABLE_NAME} where id=:ownerId")
+  @Query("SELECT * from ${OwnerEntity.TABLE_NAME} where ${OwnerEntity.ID}=:ownerId")
   fun getOwnerByIdWithGists(ownerId: Long): Maybe<OwnerWithGists>
 
 }

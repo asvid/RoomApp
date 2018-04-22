@@ -27,6 +27,10 @@ fun List<GistEntity>.convertToModel(): List<GistModel> {
   return this.map { it.toModel() }
 }
 
+fun List<GistWithOwner>.toModel(): List<GistWithOwnerModel> {
+  return this.map { it.toModel() }
+}
+
 private fun GistEntity.toModel(): GistModel {
   return GistModel(this.id, this.description, this.ownerId, this.starred)
 }

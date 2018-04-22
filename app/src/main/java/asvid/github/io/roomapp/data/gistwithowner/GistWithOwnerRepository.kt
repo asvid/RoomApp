@@ -29,8 +29,8 @@ class GistWithOwnerRepository @Inject constructor(var gistWithOwnerDao: GistWith
         "not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  fun save(model: GistWithOwnerModel): Single<GistWithOwner> {
-    return gistWithOwnerDao.saveOwnerAndGist(model.owner, model)
+  fun save(model: GistWithOwnerModel): Single<GistWithOwnerModel> {
+    return gistWithOwnerDao.saveOwnerAndGist(model)
   }
 
   fun saveAll(models: Collection<GistWithOwner>): Single<Collection<GistWithOwner>> {
