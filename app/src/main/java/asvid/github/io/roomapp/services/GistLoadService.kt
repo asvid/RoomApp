@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.util.Log
-import asvid.github.io.roomapp.MainActivity
+import asvid.github.io.roomapp.views.gists.MainActivity
 import asvid.github.io.roomapp.R.mipmap
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import dagger.android.AndroidInjection

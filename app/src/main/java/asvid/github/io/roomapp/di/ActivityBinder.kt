@@ -1,7 +1,8 @@
 package asvid.github.io.roomapp.di
 
 import android.app.Activity
-import asvid.github.io.roomapp.MainActivity
+import asvid.github.io.roomapp.views.gists.MainActivity
+import asvid.github.io.roomapp.views.owners.OwnersActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ActivityKey
@@ -15,5 +16,12 @@ ActivityBinder {
   @Binds
   @IntoMap
   @ActivityKey(MainActivity::class)
-  abstract fun bindMainActivityInjectorFactory(builder: MainActivityComponent.Builder): AndroidInjector.Factory<out Activity>
+  abstract fun bindMainActivityInjectorFactory(
+      builder: MainActivityComponent.Builder): AndroidInjector.Factory<out Activity>
+
+  @Binds
+  @IntoMap
+  @ActivityKey(OwnersActivity::class)
+  abstract fun bindOwnersActivityInjectorFactory(
+      builder: OwnersActivityComponent.Builder): AndroidInjector.Factory<out Activity>
 }

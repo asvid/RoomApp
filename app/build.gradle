@@ -36,6 +36,7 @@ dependencies {
   //  room
   implementation External.roomRuntime
   implementation External.roomRx
+  implementation 'com.android.support.constraint:constraint-layout:1.1.0'
   annotationProcessor Apt.roomCompiler
   kapt Apt.roomCompiler
 

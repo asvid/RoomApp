@@ -1,5 +1,6 @@
-package asvid.github.io.roomapp
+package asvid.github.io.roomapp.views.gists
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import asvid.github.io.roomapp.R
+import asvid.github.io.roomapp.R.id
+import asvid.github.io.roomapp.R.layout
 import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
@@ -16,6 +20,7 @@ import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.model.toModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
+import asvid.github.io.roomapp.views.owners.OwnersIntent
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.fab
@@ -23,6 +28,10 @@ import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.gistList
 import java.util.Date
 import javax.inject.Inject
+
+fun Context.GistsIntent(): Intent {
+  return Intent(this, MainActivity::class.java)
+}
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     AndroidInjection.inject(this)
 
-    setContentView(R.layout.activity_main)
+    setContentView(layout.activity_main)
     setSupportActionBar(toolbar)
 
     fab.setOnClickListener {
@@ -97,9 +106,15 @@ class MainActivity : AppCompatActivity() {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
-      R.id.action_service -> handleServiceChange(item)
+      id.action_service -> handleServiceChange(item)
+      id.action_show_owners -> showOwners()
       else -> super.onOptionsItemSelected(item)
     }
+  }
+
+  private fun showOwners(): Boolean {
+    startActivity(OwnersIntent())
+    return true
   }
 
   private fun handleServiceChange(menuItem: MenuItem): Boolean {

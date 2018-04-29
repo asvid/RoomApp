@@ -1,4 +1,4 @@
-package asvid.github.io.roomapp
+package asvid.github.io.roomapp.views.gists
 
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -7,7 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import asvid.github.io.roomapp.GistAdapter.GistViewHolder
+import asvid.github.io.roomapp.R
+import asvid.github.io.roomapp.R.id
+import asvid.github.io.roomapp.R.layout
+import asvid.github.io.roomapp.R.mipmap
+import asvid.github.io.roomapp.views.gists.GistAdapter.GistViewHolder
 import asvid.github.io.roomapp.model.GistWithOwnerModel
 import com.bumptech.glide.Glide
 
@@ -17,7 +21,7 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GistViewHolder {
     val view = LayoutInflater.from(parent.context)
-        .inflate(R.layout.gist_item, parent, false)
+        .inflate(layout.gist_item, parent, false)
     return GistViewHolder(view)
   }
 
@@ -44,27 +48,27 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
     }
 
     fun setUrl(url: String?) {
-      view.findViewById<TextView>(R.id.gistDescriptionTextView).text = url
+      view.findViewById<TextView>(id.gistDescriptionTextView).text = url
     }
 
     fun setDescription(description: String?) {
-      view.findViewById<TextView>(R.id.gistDescriptionTextView).text = description
+      view.findViewById<TextView>(id.gistDescriptionTextView).text = description
     }
 
     fun setOwnerLogin(login: String?) {
-      view.findViewById<TextView>(R.id.gistAuthorTextView).text = login
+      view.findViewById<TextView>(id.gistAuthorTextView).text = login
     }
 
     fun setOwnerAvatarUrl(avatarUrl: String?) {
       Log.d("GIST_HOLDER", "url: $avatarUrl")
       Glide.with(view.context)
           .load(avatarUrl)
-          .placeholder(R.mipmap.ic_launcher)
-          .into(view.findViewById(R.id.gistAuthorAvatarImageView))
+          .placeholder(mipmap.ic_launcher)
+          .into(view.findViewById(id.gistAuthorAvatarImageView))
     }
 
     fun setStarred(starred: Boolean?) {
-      view.findViewById<CheckBox>(R.id.starredCheckBox).isChecked = starred ?: false
+      view.findViewById<CheckBox>(id.starredCheckBox).isChecked = starred ?: false
     }
 
   }

@@ -5,7 +5,7 @@ import asvid.github.io.roomapp.App
 import dagger.Module
 import dagger.Provides
 
-@Module(subcomponents = [MainActivityComponent::class])
+@Module(subcomponents = [MainActivityComponent::class, OwnersActivityComponent::class])
 class AppModule {
 
   @Provides
