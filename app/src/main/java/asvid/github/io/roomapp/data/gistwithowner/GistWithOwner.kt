@@ -39,7 +39,7 @@ abstract class GistWithOwnerDao : GistDao, OwnerDao {
       val ownerId = insert(owner.toEntity())
       gist.ownerId = ownerId
       insert(gist.toEntity())
-      GistWithOwnerModel(gist.id, gist.description, owner, gist.starred)
+      GistWithOwnerModel(gist.id, gist.description, owner, gist.starred, gist.date)
     }
   }
 
@@ -50,10 +50,10 @@ abstract class GistWithOwnerDao : GistDao, OwnerDao {
       val ownerId = insert(gistWithOwnerModel.owner.toEntity())
       gistWithOwnerModel.owner.id = ownerId
       val gist = GistModel(gistWithOwnerModel.id, gistWithOwnerModel.description, ownerId,
-          gistWithOwnerModel.starred)
+          gistWithOwnerModel.starred, gistWithOwnerModel.date)
       val gistId = insert(gist.toEntity())
       GistWithOwnerModel(gistId, gistWithOwnerModel.description, gistWithOwnerModel.owner,
-          gistWithOwnerModel.starred)
+          gistWithOwnerModel.starred, gistWithOwnerModel.date)
     }
   }
 

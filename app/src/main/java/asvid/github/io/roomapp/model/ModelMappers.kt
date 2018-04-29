@@ -6,7 +6,7 @@ import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
 import asvid.github.io.roomapp.data.owner.OwnerEntity
 
 fun GistModel.toEntity(): GistEntity {
-  val entity = GistEntity(this.description, this.ownerId, this.starred)
+  val entity = GistEntity(this.description, this.ownerId, this.starred, this.date)
   this.id.let { entity.id = it }
   return entity
 }
@@ -20,7 +20,7 @@ fun OwnerModel.toEntity(): OwnerEntity {
 fun GistWithOwner.toModel(): GistWithOwnerModel {
   Log.d("GistWithOwner", "toModel: $this")
   return GistWithOwnerModel(this.gist.id!!, this.gist.description, this.owner.toModel(),
-      this.gist.starred)
+      this.gist.starred, this.gist.date)
 }
 
 fun List<GistEntity>.convertToModel(): List<GistModel> {
@@ -32,7 +32,7 @@ fun List<GistWithOwner>.toModel(): List<GistWithOwnerModel> {
 }
 
 private fun GistEntity.toModel(): GistModel {
-  return GistModel(this.id, this.description, this.ownerId, this.starred)
+  return GistModel(this.id, this.description, this.ownerId, this.starred, this.date)
 }
 
 fun OwnerEntity.toModel(): OwnerModel {

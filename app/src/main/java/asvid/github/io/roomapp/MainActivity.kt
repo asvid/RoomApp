@@ -2,7 +2,6 @@ package asvid.github.io.roomapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -22,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.fab
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.gistList
+import java.util.Date
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -43,10 +43,8 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     setSupportActionBar(toolbar)
 
-    fab.setOnClickListener { view ->
+    fab.setOnClickListener {
       addGist()
-      Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-          .setAction("Action", null).show()
     }
 
     initGistList()
@@ -59,24 +57,27 @@ class MainActivity : AppCompatActivity() {
     gistList.adapter = adapter
     gistList.layoutManager = LinearLayoutManager(this)
 
-    ownerRepository.fetchAll().subscribe {
-      Log.d("MAIN_ACTIVITY", "new Owner: $it")
-    }
+    ownerRepository.fetchAll()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {
+          Log.d("MAIN_ACTIVITY", "new Owner: $it")
+        }
+    gistRepository.fetchAll()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {
+          Log.d("MAIN_ACTIVITY", "new Gist: $it")
+        }
 
     gistWithOwnerRepository.fetchAll()
-        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            { onNext -> handleIncomingShit(onNext) },
+            { onNext -> handleGistsChange(onNext) },
             { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
             { Log.d("MAIN_ACTIVITY", "onComplete") }
         )
-
-    gistRepository.fetchAll().subscribe {
-      Log.d("MAIN_ACTIVITY", "new Gist: $it")
-    }
   }
 
-  private fun handleIncomingShit(onNext: Collection<GistWithOwner>) {
+  private fun handleGistsChange(onNext: Collection<GistWithOwner>) {
     Log.d("MAIN_ACTIVITY", "onNext $onNext")
     adapter.updateData(onNext.toList().toModel())
   }
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
   private fun addGist() {
     val owner = OwnerModel("random login")
     gistWithOwnerRepository.save(
-        GistWithOwnerModel(null, "description", owner, true)).subscribe { gistWithOwner ->
+        GistWithOwnerModel(null, "description", owner, true, Date())).subscribe { gistWithOwner ->
       Log.d("MAIN_ACTIVITY", "saved gist with owner: $gistWithOwner")
     }
   }
