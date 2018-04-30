@@ -12,123 +12,120 @@ import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.R.layout
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.gistwithowner.GistWithOwner
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistWithOwnerModel
 import asvid.github.io.roomapp.model.OwnerModel
-import asvid.github.io.roomapp.model.toModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
 import asvid.github.io.roomapp.views.owners.OwnersIntent
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_main.fab
-import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.content_main.gistList
-import java.util.Date
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import java.util.*
 import javax.inject.Inject
 
 fun Context.GistsIntent(): Intent {
-  return Intent(this, MainActivity::class.java)
+    return Intent(this, MainActivity::class.java)
 }
 
 class MainActivity : AppCompatActivity() {
 
-  lateinit var gistRepository: GistRepository
-    @Inject set
+    lateinit var gistRepository: GistRepository
+        @Inject set
 
-  lateinit var ownerRepository: OwnerRepository
-    @Inject set
+    lateinit var ownerRepository: OwnerRepository
+        @Inject set
 
-  lateinit var gistWithOwnerRepository: GistWithOwnerRepository
-    @Inject set
+    lateinit var gistWithOwnerRepository: GistWithOwnerRepository
+        @Inject set
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    AndroidInjection.inject(this)
+        AndroidInjection.inject(this)
 
-    setContentView(layout.activity_main)
-    setSupportActionBar(toolbar)
+        setContentView(layout.activity_main)
+        setSupportActionBar(toolbar)
 
-    fab.setOnClickListener {
-      addGist()
-    }
-
-    initGistList()
-  }
-
-  private lateinit var adapter: GistAdapter
-
-  private fun initGistList() {
-    adapter = GistAdapter()
-    gistList.adapter = adapter
-    gistList.layoutManager = LinearLayoutManager(this)
-
-    ownerRepository.fetchAll()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-          Log.d("MAIN_ACTIVITY", "new Owner: $it")
-        }
-    gistRepository.fetchAll()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-          Log.d("MAIN_ACTIVITY", "new Gist: $it")
+        fab.setOnClickListener {
+            addGist()
         }
 
-    gistWithOwnerRepository.fetchAll()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-            { onNext -> handleGistsChange(onNext) },
-            { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
-            { Log.d("MAIN_ACTIVITY", "onComplete") }
-        )
-  }
-
-  private fun handleGistsChange(onNext: Collection<GistWithOwner>) {
-    Log.d("MAIN_ACTIVITY", "onNext $onNext")
-    adapter.updateData(onNext.toList().toModel())
-  }
-
-  private fun addGist() {
-    val owner = OwnerModel("random login")
-    gistWithOwnerRepository.save(
-        GistWithOwnerModel(null, "description", owner, true, Date())).subscribe { gistWithOwner ->
-      Log.d("MAIN_ACTIVITY", "saved gist with owner: $gistWithOwner")
+        initGistList()
     }
-  }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    menuInflater.inflate(R.menu.menu_main, menu)
-    return true
-  }
+    private lateinit var adapter: GistAdapter
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      id.action_service -> handleServiceChange(item)
-      id.action_show_owners -> showOwners()
-      else -> super.onOptionsItemSelected(item)
+    private fun initGistList() {
+        adapter = GistAdapter()
+        gistList.adapter = adapter
+        gistList.layoutManager = LinearLayoutManager(this)
+
+        ownerRepository.fetchAll()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Log.d("MAIN_ACTIVITY", "new Owner: $it")
+                }
+        gistRepository.fetchAll()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Log.d("MAIN_ACTIVITY", "new Gist: $it")
+                }
+
+        gistWithOwnerRepository.fetchAll()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { onNext -> handleGistsChange(onNext) },
+                        { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
+                        { Log.d("MAIN_ACTIVITY", "onComplete") }
+                )
     }
-  }
 
-  private fun showOwners(): Boolean {
-    startActivity(OwnersIntent())
-    return true
-  }
-
-  private fun handleServiceChange(menuItem: MenuItem): Boolean {
-    if (menuItem.isChecked) {
-      val stopIntent = Intent(this@MainActivity, GistLoadService::class.java)
-      stopIntent.action = ACTION.STOPFOREGROUND_ACTION
-      startService(stopIntent)
-      menuItem.isChecked = false
-    } else {
-      val startIntent = Intent(this@MainActivity, GistLoadService::class.java)
-      startIntent.action = ACTION.STARTFOREGROUND_ACTION
-      startService(startIntent)
-      menuItem.isChecked = true
+    private fun handleGistsChange(onNext: Collection<GistWithOwnerModel>) {
+        Log.d("MAIN_ACTIVITY", "onNext $onNext")
+        adapter.updateData(onNext.toList())
     }
-    return true
-  }
+
+    private fun addGist() {
+        val owner = OwnerModel("random login")
+        gistWithOwnerRepository.save(
+                GistWithOwnerModel(null, "description", owner, true, Date())).subscribe { gistWithOwner ->
+            Log.d("MAIN_ACTIVITY", "saved gist with owner: $gistWithOwner")
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            id.action_service -> handleServiceChange(item)
+            id.action_show_owners -> showOwners()
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showOwners(): Boolean {
+        startActivity(OwnersIntent())
+        return true
+    }
+
+    private fun handleServiceChange(menuItem: MenuItem): Boolean {
+        if (menuItem.isChecked) {
+            val stopIntent = Intent(this@MainActivity, GistLoadService::class.java)
+            stopIntent.action = ACTION.STOPFOREGROUND_ACTION
+            startService(stopIntent)
+            menuItem.isChecked = false
+        } else {
+            val startIntent = Intent(this@MainActivity, GistLoadService::class.java)
+            startIntent.action = ACTION.STARTFOREGROUND_ACTION
+            startService(startIntent)
+            menuItem.isChecked = true
+        }
+        return true
+    }
 }

@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
+import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsRepository
 import asvid.github.io.roomapp.model.OwnerWithGistsModel
 import asvid.github.io.roomapp.views.gists.GistsIntent
@@ -26,6 +27,8 @@ fun Context.OwnersIntent(): Intent {
 class OwnersActivity : AppCompatActivity() {
 
     lateinit var ownersWithGistsRepository: OwnerWithGistsRepository
+        @Inject set
+    lateinit var ownersRepository: OwnerRepository
         @Inject set
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +57,12 @@ class OwnersActivity : AppCompatActivity() {
                         { onError -> Log.d("OWNERS", "error: $onError") },
                         { Log.d("OWNERS", "onComplete") }
                 )
+
+        ownersRepository.fetchAll().observeOn(AndroidSchedulers.mainThread()).subscribe(
+                { onNext -> Log.d("OWNERS", "only owners: $onNext") },
+                { onError -> Log.d("OWNERS", "error: $onError") },
+                { Log.d("OWNERS", "onComplete") }
+        )
     }
 
     private fun handleOwnersChange(onNext: List<OwnerWithGistsModel>) {
