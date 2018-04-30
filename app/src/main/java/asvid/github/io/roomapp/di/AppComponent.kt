@@ -12,7 +12,8 @@ import javax.inject.Singleton
     ActivityBinder::class,
     AppModule::class,
     DataModule::class,
-    ServiceBuilderModule::class])
+    ServiceBuilderModule::class,
+    FragmentBuilderModule::class])
 interface AppComponent {
 
     fun inject(app: App)

@@ -9,13 +9,23 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import asvid.github.io.roomapp.views.gists.MainActivity
 import asvid.github.io.roomapp.R.mipmap
+import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
+import asvid.github.io.roomapp.data.owner.OwnerRepository
+import asvid.github.io.roomapp.model.GistModel
+import asvid.github.io.roomapp.model.OwnerModel
+import asvid.github.io.roomapp.utils.RandomStringGenerator
+import asvid.github.io.roomapp.utils.getRandomElement
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
 class GistLoadService : Service() {
 
-  lateinit var gistWithOwnerRepository: GistWithOwnerRepository
+  lateinit var gistRepository: GistRepository
+    @Inject set
+
+  lateinit var ownerRepository: OwnerRepository
     @Inject set
 
   var handler: Handler? = null
@@ -82,7 +92,13 @@ class GistLoadService : Service() {
     return object : Runnable {
       override fun run() {
 
-//        TODO: random generate gist with owner
+        ownerRepository.fetchAll().subscribe {
+          val owner = it.getRandomElement() as OwnerModel
+          owner.let {
+            val gist = GistModel(null, RandomStringGenerator.getString(), it.id!! ,false, Date())
+            gistRepository.save(gist)
+          }
+        }
 
         handler?.postDelayed(this, delay.toLong())
       }

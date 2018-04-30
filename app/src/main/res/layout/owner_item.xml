@@ -18,30 +18,19 @@
       />
 
   <TextView
-      android:id="@+id/gistDescriptionTextView"
+      android:id="@+id/ownerLoginTextView"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:minWidth="18dp"
-      app:layout_constraintEnd_toStartOf="@+id/starredCheckBox"
-      app:layout_constraintStart_toEndOf="@+id/idTextView"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-
-  <CheckBox
-      android:id="@+id/starredCheckBox"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:layout_marginTop="8dp"
-      android:text="Starred"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      />
+      app:layout_constraintStart_toEndOf="@+id/idTextView"
+      app:layout_constraintTop_toTopOf="parent" />
+
   <ImageView
-      android:id="@+id/gistAuthorAvatarImageView"
+      android:id="@+id/ownerAvatarImageView"
       android:layout_width="64dp"
       android:layout_height="64dp"
       android:layout_marginStart="8dp"
@@ -50,34 +39,16 @@
       app:layout_constraintTop_toBottomOf="@+id/idTextView"
       app:srcCompat="@mipmap/ic_launcher"
       />
+
   <TextView
-      android:id="@+id/gistAuthorTextView"
+      android:id="@+id/ownerGistsNumberTextView"
       android:layout_width="0dp"
       android:layout_height="21dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
       android:minWidth="18dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/gistAuthorAvatarImageView"
-      app:layout_constraintTop_toBottomOf="@+id/starredCheckBox"
-      />
-
-  <TextView
-      android:id="@+id/gistDateTextView"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
-      android:minWidth="18dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/gistAuthorAvatarImageView"
-      app:layout_constraintVertical_bias="0.0"
-      />
+      app:layout_constraintStart_toEndOf="@+id/ownerAvatarImageView"
+      tools:layout_editor_absoluteY="48dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -2,20 +2,20 @@ package asvid.github.io.roomapp
 
 import android.app.Activity
 import android.app.Application
+import android.app.Fragment
 import android.app.Service
 import asvid.github.io.roomapp.di.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasServiceInjector
+import dagger.android.*
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector, HasServiceInjector {
+class App : Application(), HasActivityInjector, HasServiceInjector, HasFragmentInjector {
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
     @Inject
     lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
+    @Inject
+    lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun activityInjector(): AndroidInjector<Activity> {
         return dispatchingAndroidInjector
@@ -23,6 +23,10 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
     override fun serviceInjector(): AndroidInjector<Service> {
         return dispatchingServiceInjector
+    }
+
+    override fun fragmentInjector(): AndroidInjector<Fragment> {
+        return dispatchingFragmentInjector
     }
 
     override fun onCreate() {

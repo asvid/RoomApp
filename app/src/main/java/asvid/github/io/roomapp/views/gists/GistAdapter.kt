@@ -14,6 +14,7 @@ import asvid.github.io.roomapp.R.mipmap
 import asvid.github.io.roomapp.views.gists.GistAdapter.GistViewHolder
 import asvid.github.io.roomapp.model.GistWithOwnerModel
 import com.bumptech.glide.Glide
+import java.util.*
 
 class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
@@ -47,8 +48,8 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
       view.findViewById<TextView>(R.id.idTextView).text = id
     }
 
-    fun setUrl(url: String?) {
-      view.findViewById<TextView>(id.gistDescriptionTextView).text = url
+    fun setDate(date: Date?) {
+      view.findViewById<TextView>(id.gistDateTextView).text = date.toString()
     }
 
     fun setDescription(description: String?) {
