@@ -1,7 +1,7 @@
 package asvid.github.io.roomapp.model
 
 data class OwnerModel(
-        var login: String? = null,
+        val login: String,
         var id: Long? = null
 )
 

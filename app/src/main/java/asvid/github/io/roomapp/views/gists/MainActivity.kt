@@ -15,7 +15,6 @@ import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistWithOwnerModel
-import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
 import asvid.github.io.roomapp.views.owners.OwnersIntent
@@ -23,7 +22,6 @@ import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.util.*
 import javax.inject.Inject
 
 fun Context.GistsIntent(): Intent {
@@ -89,11 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addGist() {
-        val owner = OwnerModel("random login")
-        gistWithOwnerRepository.save(
-                GistWithOwnerModel(null, "description", owner, true, Date())).subscribe { gistWithOwner ->
-            Log.d("MAIN_ACTIVITY", "saved gist with owner: $gistWithOwner")
-        }
+        AddGistDialog().show(fragmentManager, "add gist")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
