@@ -4,14 +4,17 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.model.OwnerWithGistsModel
 import asvid.github.io.roomapp.views.owners.OwnersAdapter.OwnerViewHolder
+import io.reactivex.subjects.PublishSubject
 
 class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
 
     private var items: List<OwnerWithGistsModel>? = null
+    val itemDeleteSubject: PublishSubject<OwnerWithGistsModel> = PublishSubject.create<OwnerWithGistsModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OwnersAdapter.OwnerViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -25,6 +28,9 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
 
     override fun onBindViewHolder(holder: OwnerViewHolder, position: Int) {
         val item = items?.get(position)
+        holder.setDeleteButtonListener(View.OnClickListener {
+            itemDeleteSubject.onNext(item!!)
+        })
         holder.setId(item?.id)
         holder.setLogin(item?.login)
         holder.setAvatarUrl()
@@ -37,6 +43,11 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
     }
 
     class OwnerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun setDeleteButtonListener(listener: View.OnClickListener) {
+            view.findViewById<Button>(R.id.deleteButton).setOnClickListener(listener)
+        }
+
         fun setId(id: Long?) {
             view.findViewById<TextView>(R.id.idTextView).text = id.toString()
         }
@@ -52,6 +63,5 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
         fun setGistsNumber(size: Int?) {
             view.findViewById<TextView>(R.id.ownerGistsNumberTextView).text = "has $size gists"
         }
-
     }
 }

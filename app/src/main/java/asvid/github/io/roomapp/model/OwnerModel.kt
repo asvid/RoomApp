@@ -6,7 +6,7 @@ data class OwnerModel(
 )
 
 data class OwnerWithGistsModel(
-        var login: String? = null,
+        var login: String,
         var id: Long? = null,
         var gists: List<GistModel>
 )

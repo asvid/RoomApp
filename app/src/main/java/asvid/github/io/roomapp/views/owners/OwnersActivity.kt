@@ -13,6 +13,7 @@ import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsRepository
 import asvid.github.io.roomapp.model.OwnerWithGistsModel
+import asvid.github.io.roomapp.model.toOwnerModel
 import asvid.github.io.roomapp.views.gists.GistsIntent
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -63,6 +64,11 @@ class OwnersActivity : AppCompatActivity() {
                 { onError -> Log.d("OWNERS", "error: $onError") },
                 { Log.d("OWNERS", "onComplete") }
         )
+
+        adapter.itemDeleteSubject.subscribe {
+            Log.d("OWNERS", "deleting $it")
+            ownersRepository.delete(it.toOwnerModel()).subscribe()
+        }
     }
 
     private fun handleOwnersChange(onNext: List<OwnerWithGistsModel>) {

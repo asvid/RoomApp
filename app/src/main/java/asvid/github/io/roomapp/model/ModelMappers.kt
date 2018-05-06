@@ -51,3 +51,7 @@ fun OwnerWithGists.toModel(): OwnerWithGistsModel {
 fun List<OwnerWithGists>.model(): List<OwnerWithGistsModel> {
     return this.map { it.toModel() }
 }
+
+fun OwnerWithGistsModel.toOwnerModel(): OwnerModel {
+    return OwnerModel(this.login, this.id)
+}
