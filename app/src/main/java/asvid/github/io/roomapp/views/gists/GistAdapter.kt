@@ -72,7 +72,6 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
         }
 
         fun setOwnerAvatarUrl(avatarUrl: String?) {
-            Log.d("GIST_HOLDER", "url: $avatarUrl")
             Glide.with(view.context)
                     .load(avatarUrl)
                     .placeholder(mipmap.ic_launcher)

@@ -12,7 +12,7 @@ import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsDao
 @Database(entities = [
   GistEntity::class,
   OwnerEntity::class
-], version = 1)
+], version = 2)
 abstract class GistDatabase : RoomDatabase() {
 
   abstract fun gistDao(): GistDao

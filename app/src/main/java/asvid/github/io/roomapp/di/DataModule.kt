@@ -7,6 +7,7 @@ import asvid.github.io.roomapp.data.gist.GistDao
 import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerDao
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
+import asvid.github.io.roomapp.data.migrations.MIGRATION_1_2
 import asvid.github.io.roomapp.data.owner.OwnerDao
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsDao
@@ -17,46 +18,48 @@ import javax.inject.Singleton
 
 @Module(includes = [AppModule::class])
 class DataModule {
-  @Singleton
-  @Provides
-  fun gistDatabase(context: Context): GistDatabase = Room.databaseBuilder(context,
-      GistDatabase::class.java, "Gist.db").allowMainThreadQueries().build()
+    @Singleton
+    @Provides
+    fun gistDatabase(context: Context): GistDatabase = Room.databaseBuilder(context, GistDatabase::class.java, "Gist.db")
+            .allowMainThreadQueries()
+            .addMigrations(MIGRATION_1_2)
+            .build()
 
-  @Singleton
-  @Provides
-  fun gistRepository(counterDao: GistDao): GistRepository = GistRepository(counterDao)
+    @Singleton
+    @Provides
+    fun gistRepository(counterDao: GistDao): GistRepository = GistRepository(counterDao)
 
-  @Singleton
-  @Provides
-  fun gistDao(context: Context): GistDao = gistDatabase(context).gistDao()
+    @Singleton
+    @Provides
+    fun gistDao(context: Context): GistDao = gistDatabase(context).gistDao()
 
-  @Singleton
-  @Provides
-  fun ownerRepository(ownerDao: OwnerDao): OwnerRepository = OwnerRepository(ownerDao)
+    @Singleton
+    @Provides
+    fun ownerRepository(ownerDao: OwnerDao): OwnerRepository = OwnerRepository(ownerDao)
 
-  @Singleton
-  @Provides
-  fun ownerDao(context: Context): OwnerDao = gistDatabase(context).ownerDao()
+    @Singleton
+    @Provides
+    fun ownerDao(context: Context): OwnerDao = gistDatabase(context).ownerDao()
 
-  @Singleton
-  @Provides
-  fun gistWithOwnerRepository(
-      ownerDao: GistWithOwnerDao): GistWithOwnerRepository = GistWithOwnerRepository(
-      ownerDao)
+    @Singleton
+    @Provides
+    fun gistWithOwnerRepository(
+            ownerDao: GistWithOwnerDao): GistWithOwnerRepository = GistWithOwnerRepository(
+            ownerDao)
 
-  @Singleton
-  @Provides
-  fun gistWithOwnerDao(context: Context): GistWithOwnerDao = gistDatabase(
-      context).gistWithOwnerDao()
+    @Singleton
+    @Provides
+    fun gistWithOwnerDao(context: Context): GistWithOwnerDao = gistDatabase(
+            context).gistWithOwnerDao()
 
-  @Singleton
-  @Provides
-  fun ownerWithGistsRepository(
-      ownerWithGistsDao: OwnerWithGistsDao): OwnerWithGistsRepository = OwnerWithGistsRepository(
-      ownerWithGistsDao)
+    @Singleton
+    @Provides
+    fun ownerWithGistsRepository(
+            ownerWithGistsDao: OwnerWithGistsDao): OwnerWithGistsRepository = OwnerWithGistsRepository(
+            ownerWithGistsDao)
 
-  @Singleton
-  @Provides
-  fun ownerWithGistsDao(context: Context): OwnerWithGistsDao = gistDatabase(
-      context).ownerWithGistDao()
+    @Singleton
+    @Provides
+    fun ownerWithGistsDao(context: Context): OwnerWithGistsDao = gistDatabase(
+            context).ownerWithGistDao()
 }

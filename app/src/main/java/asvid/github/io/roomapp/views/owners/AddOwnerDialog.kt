@@ -4,9 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
-import android.util.Log
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.OwnerModel
@@ -20,6 +18,7 @@ class AddOwnerDialog : DialogFragment() {
         @Inject set
 
     lateinit var ownerLoginWrapper: TextInputLayout
+    lateinit var avatarUrlWrapper: TextInputLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -32,6 +31,7 @@ class AddOwnerDialog : DialogFragment() {
         val inflater = activity.layoutInflater
         val view = inflater.inflate(R.layout.dialog_add_owner, null)
         ownerLoginWrapper = view.findViewById(R.id.ownerLoginWrapper)
+        avatarUrlWrapper = view.findViewById(R.id.avatarUrlWrapper)
         builder.setView(view).setTitle("add owner")
                 .setPositiveButton(R.string.save, { dialog, id ->
                     saveOwner()
@@ -44,6 +44,7 @@ class AddOwnerDialog : DialogFragment() {
 
     private fun saveOwner() {
         val ownerLogin = ownerLoginWrapper.editText?.text.toString()
-        ownerRepository.save(OwnerModel(ownerLogin, null)).subscribe()
+        val avatarUrl = avatarUrlWrapper.editText?.text.toString()
+        ownerRepository.save(OwnerModel(ownerLogin, null, avatarUrl)).subscribe()
     }
 }

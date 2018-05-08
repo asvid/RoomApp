@@ -148,53 +148,46 @@
     <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.android.support:transition-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-compat-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.retrofit2:retrofit:2.4.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:support-core-utils-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.persistence.room:rxjava2-1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.retrofit2:converter-gson:2.3.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.14.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1@jar" level="project" />
-    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1@jar" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.21@jar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.persistence:db-framework-1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-1.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:logging-interceptor:3.9.1@jar" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.persistence:db-1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.persistence.room:runtime-1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.android.support:preference-v7-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.dagger:dagger-android-2.12" level="project" />
-    <orderEntry type="library" name="Gradle: android.arch.persistence.room:common:1.0.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide:3.7.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-v4-27.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.21@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:support-compat-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: io.reactivex.rxjava2:rxjava:2.1.9@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: net.zetetic:android-database-sqlcipher-3.5.7" level="project" />
     <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:recyclerview-v7-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.salomonbrys.kotson:kotson:2.5.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-media-compat-27.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-core-ui-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.ocpsoft.prettytime:prettytime:4.0.1.Final@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:support-core-utils-27.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: android.arch.persistence.room:rxjava2-1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:27.0.2@jar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.amitshekhar.android:debug-db-1.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.jakewharton.rxrelay2:rxrelay:2.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1@jar" level="project" />
+    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1@jar" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.21@jar" level="project" />
     <orderEntry type="library" name="Gradle: io.reactivex.rxjava2:rxandroid-2.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: android.arch.persistence:db-framework-1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-fragment-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.21@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-1.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: android.arch.persistence:db-1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: android.arch.persistence.room:runtime-1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:design-27.0.2" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:runtime-1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7-27.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.10.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.2@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support:preference-v7-27.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.dagger:dagger-android-2.12" level="project" />
+    <orderEntry type="library" name="Gradle: android.arch.persistence.room:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.dagger:dagger-android-support-2.12" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.retrofit2:adapter-rxjava2:2.3.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.dagger:dagger:2.12@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide:3.7.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:runtime-1.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.jakewharton.rxbinding2:rxbinding-2.0.0" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:common:1.0.3@jar" level="project" />

@@ -9,6 +9,7 @@ import android.widget.TextView
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.model.OwnerWithGistsModel
 import asvid.github.io.roomapp.views.owners.OwnersAdapter.OwnerViewHolder
+import com.bumptech.glide.Glide
 import io.reactivex.subjects.PublishSubject
 
 class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
@@ -33,7 +34,7 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
         })
         holder.setId(item?.id)
         holder.setLogin(item?.login)
-        holder.setAvatarUrl()
+        holder.setAvatarUrl(item?.avatarUrl)
         holder.setGistsNumber(item?.gists?.size)
     }
 
@@ -56,8 +57,11 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
             view.findViewById<TextView>(R.id.ownerLoginTextView).text = login
         }
 
-        fun setAvatarUrl() {
-
+        fun setAvatarUrl(avatarUrl: String?) {
+            Glide.with(view.context)
+                    .load(avatarUrl)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(view.findViewById(R.id.gistAuthorAvatarImageView))
         }
 
         fun setGistsNumber(size: Int?) {

@@ -13,13 +13,12 @@ fun GistModel.toEntity(): GistEntity {
 }
 
 fun OwnerModel.toEntity(): OwnerEntity {
-    val entity = OwnerEntity(this.login ?: "")
+    val entity = OwnerEntity(login = this.login ?: "", avatarUrl = this.avatarUrl)
     this.id.let { entity.id = it }
     return entity
 }
 
 fun GistWithOwner.toModel(): GistWithOwnerModel {
-    Log.d("GistWithOwner", "toModel: $this")
     return GistWithOwnerModel(this.gist.id!!, this.gist.description, this.owner.toModel(),
             this.gist.starred, this.gist.date)
 }
@@ -45,7 +44,7 @@ fun Collection<OwnerEntity>.toModel(): Collection<OwnerModel> {
 }
 
 fun OwnerWithGists.toModel(): OwnerWithGistsModel {
-    return OwnerWithGistsModel(this.owner.login, this.owner.id, this.gists.convertToModel())
+    return OwnerWithGistsModel(this.owner.login, this.owner.id, this.owner.avatarUrl, this.gists.convertToModel())
 }
 
 fun List<OwnerWithGists>.model(): List<OwnerWithGistsModel> {
@@ -53,7 +52,7 @@ fun List<OwnerWithGists>.model(): List<OwnerWithGistsModel> {
 }
 
 fun OwnerWithGistsModel.toOwnerModel(): OwnerModel {
-    return OwnerModel(this.login, this.id)
+    return OwnerModel(this.login, this.id, this.avatarUrl)
 }
 
 fun GistWithOwnerModel.toGistModel(): GistModel {

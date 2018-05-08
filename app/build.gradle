@@ -43,15 +43,6 @@ dependencies {
     // RxJava support for Room (use 1.1.0-beta2 for latest alpha)
     implementation "android.arch.persistence.room:rxjava2:1.0.0"
 
-    //  Api
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-
-    implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
-
     //  pretty time
     implementation External.prettyTime
     //  RX
