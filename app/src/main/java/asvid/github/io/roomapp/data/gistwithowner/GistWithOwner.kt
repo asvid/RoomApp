@@ -16,45 +16,41 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 class GistWithOwner {
-  @Embedded
-  lateinit var gist: GistEntity
-  @Embedded
-  lateinit var owner: OwnerEntity
-
-  override fun toString(): String {
-    return "gist: $gist | owner: $owner"
-  }
+    @Embedded
+    lateinit var gist: GistEntity
+    @Embedded
+    lateinit var owner: OwnerEntity
 }
 
 @Dao
 abstract class GistWithOwnerDao : GistDao, OwnerDao {
 
-  @Query(
-      "SELECT * from ${GistEntity.TABLE_NAME}, ${OwnerEntity.TABLE_NAME} where ${GistEntity.OWNER_ID} = ${OwnerEntity.ID}")
-  abstract fun getGistsWithOwners(): Flowable<List<GistWithOwner>>
+    @Query(
+            "SELECT * from ${GistEntity.TABLE_NAME}, ${OwnerEntity.TABLE_NAME} where ${GistEntity.OWNER_ID} = ${OwnerEntity.ID}")
+    abstract fun getGistsWithOwners(): Flowable<List<GistWithOwner>>
 
-  @Transaction
-  open fun saveOwnerAndGist(owner: OwnerModel, gist: GistModel): Single<GistWithOwnerModel> {
-    return Single.fromCallable {
-      val ownerId = insert(owner.toEntity())
-      gist.ownerId = ownerId
-      insert(gist.toEntity())
-      GistWithOwnerModel(gist.id, gist.description, owner, gist.starred, gist.date)
+    @Transaction
+    open fun saveOwnerAndGist(owner: OwnerModel, gist: GistModel): Single<GistWithOwnerModel> {
+        return Single.fromCallable {
+            val ownerId = insert(owner.toEntity())
+            gist.ownerId = ownerId
+            insert(gist.toEntity())
+            GistWithOwnerModel(gist.id, gist.description, owner, gist.starred, gist.date)
+        }
     }
-  }
 
-  @Transaction
-  open fun saveOwnerAndGist(gistWithOwnerModel: GistWithOwnerModel): Single<GistWithOwnerModel> {
+    @Transaction
+    open fun saveOwnerAndGist(gistWithOwnerModel: GistWithOwnerModel): Single<GistWithOwnerModel> {
 
-    return Single.fromCallable {
-      val ownerId = insert(gistWithOwnerModel.owner.toEntity())
-      gistWithOwnerModel.owner.id = ownerId
-      val gist = GistModel(gistWithOwnerModel.id, gistWithOwnerModel.description, ownerId,
-          gistWithOwnerModel.starred, gistWithOwnerModel.date)
-      val gistId = insert(gist.toEntity())
-      GistWithOwnerModel(gistId, gistWithOwnerModel.description, gistWithOwnerModel.owner,
-          gistWithOwnerModel.starred, gistWithOwnerModel.date)
+        return Single.fromCallable {
+            val ownerId = insert(gistWithOwnerModel.owner.toEntity())
+            gistWithOwnerModel.owner.id = ownerId
+            val gist = GistModel(gistWithOwnerModel.id, gistWithOwnerModel.description, ownerId,
+                    gistWithOwnerModel.starred, gistWithOwnerModel.date)
+            val gistId = insert(gist.toEntity())
+            GistWithOwnerModel(gistId, gistWithOwnerModel.description, gistWithOwnerModel.owner,
+                    gistWithOwnerModel.starred, gistWithOwnerModel.date)
+        }
     }
-  }
 
 }

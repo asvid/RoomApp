@@ -11,7 +11,7 @@ import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
-import asvid.github.io.roomapp.model.GistWithOwnerModel
+import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.model.OwnerModel
 import dagger.android.AndroidInjection
 import java.util.*
@@ -75,8 +75,8 @@ class AddGistDialog : DialogFragment() {
     private fun saveGist() {
         val gistDesc = gistDescWrapper.editText?.text.toString()
         val owner = ownersList.elementAt(ownersSpinner.selectedItemPosition)
-//        gistRepository.save(GistModel(null, gistDesc, owner.id!!, false, Date())).subscribe()
+        gistRepository.save(GistModel(null, gistDesc, owner.id!!, false, Date())).subscribe()
 
-        gistWithOwnerRepository.save(GistWithOwnerModel(null, gistDesc, owner, false, Date())).subscribe()
+//        gistWithOwnerRepository.save(GistWithOwnerModel(null, gistDesc, owner, false, Date())).subscribe()
     }
 }

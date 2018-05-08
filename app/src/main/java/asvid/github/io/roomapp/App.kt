@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.app.Fragment
 import android.app.Service
+import android.util.Log
 import asvid.github.io.roomapp.di.DaggerAppComponent
+import com.amitshekhar.DebugDB
 import dagger.android.*
 import javax.inject.Inject
 
@@ -40,5 +42,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector, HasFragmentI
                 .application(this)
                 .build()
                 .inject(this)
+
+        Log.d("ROOM_DB", "${DebugDB.getAddressLog()}")
     }
 }

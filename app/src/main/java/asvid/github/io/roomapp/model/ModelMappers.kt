@@ -55,3 +55,7 @@ fun List<OwnerWithGists>.model(): List<OwnerWithGistsModel> {
 fun OwnerWithGistsModel.toOwnerModel(): OwnerModel {
     return OwnerModel(this.login, this.id)
 }
+
+fun GistWithOwnerModel.toGistModel(): GistModel {
+    return GistModel(this.id, this.description, this.owner.id!!, this.starred, this.date)
+}

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.R.layout
@@ -15,6 +16,7 @@ import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistWithOwnerModel
+import asvid.github.io.roomapp.model.toGistModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
 import asvid.github.io.roomapp.views.owners.OwnersIntent
@@ -64,21 +66,29 @@ class MainActivity : AppCompatActivity() {
         ownerRepository.fetchAll()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    Log.d("MAIN_ACTIVITY", "new Owner: $it")
+                    Log.d("MAIN_ACTIVITY", "Owners changed: $it")
                 }
+
         gistRepository.fetchAll()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    Log.d("MAIN_ACTIVITY", "new Gist: $it")
+                    Log.d("MAIN_ACTIVITY", "Gists changed: $it")
+                    Toast.makeText(this, "new gist!", Toast.LENGTH_SHORT).show()
+
+                    gistWithOwnerRepository.fetchAll()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    { onNext -> handleGistsChange(onNext) },
+                                    { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
+                                    { Log.d("MAIN_ACTIVITY", "onComplete") }
+                            )
                 }
 
-        gistWithOwnerRepository.fetchAll()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { onNext -> handleGistsChange(onNext) },
-                        { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
-                        { Log.d("MAIN_ACTIVITY", "onComplete") }
-                )
+        adapter.itemStarredSubject
+                .subscribe {
+                    gistRepository.update(it.toGistModel()).subscribe()
+                    Log.d("MAIN_ACTIVITY", "star checkbox clicked: ${it.toGistModel()}")
+                }
     }
 
     private fun handleGistsChange(onNext: Collection<GistWithOwnerModel>) {

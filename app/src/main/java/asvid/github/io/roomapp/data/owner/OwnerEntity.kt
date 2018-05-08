@@ -8,15 +8,15 @@ import asvid.github.io.roomapp.data.owner.OwnerEntity.Companion.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
 data class OwnerEntity(
-    val login: String) {
+        val login: String) {
 
-  @PrimaryKey(autoGenerate = true)
-  @ColumnInfo(name = "owner_id")
-  @NonNull
-  var id: Long? = null
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "owner_id")
+    @NonNull
+    var id: Long? = null
 
-  companion object {
-    const val TABLE_NAME = "owner"
-    const val ID = "owner_id"
-  }
+    companion object {
+        const val TABLE_NAME = "owner"
+        const val ID = "owner_id"
+    }
 }

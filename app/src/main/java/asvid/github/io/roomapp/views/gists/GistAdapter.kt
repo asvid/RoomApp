@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.*
 import asvid.github.io.roomapp.model.GistWithOwnerModel
 import asvid.github.io.roomapp.views.gists.GistAdapter.GistViewHolder
 import com.bumptech.glide.Glide
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
     private var items: List<GistWithOwnerModel>? = null
+    val itemStarredSubject: PublishSubject<GistWithOwnerModel> = PublishSubject.create<GistWithOwnerModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GistViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,11 +33,16 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
     override fun onBindViewHolder(holder: GistViewHolder, position: Int) {
         val item = items?.get(position)
+        holder.setStarredListener(null)
         holder.setId(item?.id.toString())
         holder.setDescription(item?.description)
         holder.setOwnerLogin(item?.owner?.login)
         holder.setStarred(item?.starred)
         holder.setDate(item?.date)
+        holder.setStarredListener(CompoundButton.OnCheckedChangeListener { button, isChecked ->
+            items?.get(position)!!.starred = isChecked
+            itemStarredSubject.onNext(items?.get(position)!!)
+        })
     }
 
     fun updateData(list: List<GistWithOwnerModel>) {
@@ -43,8 +51,12 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
     }
 
     class GistViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+        val starredCheckbox = view.findViewById<CheckBox>(id.starredCheckBox)
+
         fun setId(id: String?) {
             view.findViewById<TextView>(R.id.idTextView).text = id
+            starredCheckbox.tag = id
         }
 
         fun setDate(date: Date?) {
@@ -68,7 +80,11 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
         }
 
         fun setStarred(starred: Boolean?) {
-            view.findViewById<CheckBox>(id.starredCheckBox).isChecked = starred ?: false
+            starredCheckbox.isChecked = starred ?: false
+        }
+
+        fun setStarredListener(listener: CompoundButton.OnCheckedChangeListener?) {
+            starredCheckbox.setOnCheckedChangeListener(listener)
         }
 
     }
