@@ -10,13 +10,13 @@ import asvid.github.io.roomapp.data.owner.OwnerEntity
 import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsDao
 
 @Database(entities = [
-  GistEntity::class,
-  OwnerEntity::class
+    GistEntity::class,
+    OwnerEntity::class
 ], version = 2)
 abstract class GistDatabase : RoomDatabase() {
 
-  abstract fun gistDao(): GistDao
-  abstract fun ownerDao(): OwnerDao
-  abstract fun gistWithOwnerDao(): GistWithOwnerDao
-  abstract fun ownerWithGistDao(): OwnerWithGistsDao
+    abstract fun gistDao(): GistDao
+    abstract fun ownerDao(): OwnerDao
+    abstract fun gistWithOwnerDao(): GistWithOwnerDao
+    abstract fun ownerWithGistDao(): OwnerWithGistsDao
 }
