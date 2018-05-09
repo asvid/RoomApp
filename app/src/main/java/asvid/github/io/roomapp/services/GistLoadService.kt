@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import asvid.github.io.roomapp.R.mipmap
@@ -28,7 +29,7 @@ class GistLoadService : Service() {
         @Inject set
 
     var handler: Handler? = null
-    val delay = 10 * 1000
+    val DELAY = 10 * 1000L
     lateinit var runnable: Runnable
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -90,16 +91,17 @@ class GistLoadService : Service() {
     private fun createRunnable(): Runnable {
         return object : Runnable {
             override fun run() {
-
+                Log.d("SERVICE", "is main thread: ${Looper.myLooper() == Looper.getMainLooper()}")
                 ownerRepository.fetchAll().subscribe {
                     val owner = it.getRandomElement() as OwnerModel
                     owner.let {
+                        Log.d("SERVICE", "is main thread: ${Looper.myLooper() == Looper.getMainLooper()}")
                         val gist = GistModel(null, RandomStringGenerator.getString(), it.id!!, false, Date())
                         gistRepository.save(gist).subscribe()
                     }
                 }
 
-                handler?.postDelayed(this, delay.toLong())
+                handler?.postDelayed(this, DELAY)
             }
         }
     }

@@ -61,7 +61,7 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
             Glide.with(view.context)
                     .load(avatarUrl)
                     .placeholder(R.mipmap.ic_launcher)
-                    .into(view.findViewById(R.id.gistAuthorAvatarImageView))
+                    .into(view.findViewById(R.id.ownerAvatarImageView))
         }
 
         fun setGistsNumber(size: Int?) {

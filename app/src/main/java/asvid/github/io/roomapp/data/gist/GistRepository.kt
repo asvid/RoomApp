@@ -1,5 +1,6 @@
 package asvid.github.io.roomapp.data.gist
 
+import android.os.Looper
 import android.util.Log
 import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
@@ -34,6 +35,7 @@ class GistRepository @Inject constructor(var gistDao: GistDao) :
 
     override fun save(model: GistModel): Single<GistModel> {
         Log.d("GIST_REPO", "save: $model")
+        Log.d("GIST_REPO", "is main thread: ${Looper.myLooper() == Looper.getMainLooper()}")
         return Single.fromCallable {
             val id = gistDao.insert(model.toEntity())
             model.id = id
