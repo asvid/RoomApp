@@ -4,24 +4,24 @@ import android.util.Log
 import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.model.toEntity
-import asvid.github.io.roomapp.model.toModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.realm.RealmQuery
 import javax.inject.Inject
 
-class OwnerRepository @Inject constructor(private var ownerDao: OwnerDao) :
-        RxCrudRepository<OwnerModel, Long> {
+class OwnerRepository @Inject constructor(override val gistDatabase: RealmQuery<Owner>) :
+        RxCrudRepository<OwnerModel, Owner, Long> {
 
     override fun delete(model: OwnerModel): Completable {
         return Completable.fromAction {
-            ownerDao.delete(model.toEntity())
+            gistDatabase.equalTo("id", model.id).findFirst()?.deleteFromRealm()
         }
     }
 
     override fun deleteAll(models: Collection<OwnerModel>): Completable {
-        return Completable.fromAction { ownerDao.delete() }
+        return Completable.fromAction { realmDb.findAll().deleteAllFromRealm() }
     }
 
     override fun fetchAll(): Flowable<Collection<OwnerModel>> {

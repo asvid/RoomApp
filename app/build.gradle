@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 27
@@ -21,6 +22,9 @@ android {
     lintOptions {
         abortOnError false
     }
+    realm {
+        syncEnabled false
+    }
 }
 
 dependencies {
@@ -33,27 +37,12 @@ dependencies {
     implementation Support.constraint
     implementation 'com.google.code.gson:gson:2.8.2'
 
-    //  room
-    implementation External.roomRuntime
-    implementation External.roomRx
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    annotationProcessor Apt.roomCompiler
-    kapt Apt.roomCompiler
-
-    // RxJava support for Room (use 1.1.0-beta2 for latest alpha)
-    implementation "android.arch.persistence.room:rxjava2:1.0.0"
-
-    //  Api
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-
-    implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
-
     //  pretty time
     implementation External.prettyTime
+
+    //  Logging
+    implementation External.timber
+
     //  RX
     implementation External.rxjava2
     implementation External.rxrelay2
@@ -68,7 +57,4 @@ dependencies {
     annotationProcessor Apt.daggerCompiler
     kapt Apt.daggerCompiler
     kapt External.daggerProcessor
-
-//  Room debugging
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
 }

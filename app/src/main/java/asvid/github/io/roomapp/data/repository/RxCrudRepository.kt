@@ -4,17 +4,21 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.realm.RealmQuery
 
-interface RxCrudRepository<M, I> : Repository<M, I> {
-  fun delete(model: M): Completable
+interface RxCrudRepository<M, RM, I> : Repository<M, RM, I> {
 
-  fun deleteAll(models: Collection<M>): Completable
+    val gistDatabase: RealmQuery<RM>
 
-  fun fetchAll(): Flowable<Collection<M>>
+    fun delete(model: M): Completable
 
-  fun fetchById(id: I): Maybe<M>
+    fun deleteAll(models: Collection<M>): Completable
 
-  fun save(model: M): Single<M>
+    fun fetchAll(): Flowable<Collection<M>>
 
-  fun saveAll(models: Collection<M>): Single<Collection<M>>
+    fun fetchById(id: I): Maybe<M>
+
+    fun save(model: M): Single<M>
+
+    fun saveAll(models: Collection<M>): Single<Collection<M>>
 }

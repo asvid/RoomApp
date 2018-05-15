@@ -8,9 +8,10 @@ object Versions {
   const val support = "27.0.2"
   const val robolectric = "3.4.2"
   const val kotlin = "1.2.21"
-  const val timber = "4.6.1"
+  const val timber = "4.7.0"
   const val rx = "2.1.9"
   const val room = "1.0.0"
+  const val realm = "1.0.0"
 }
 
 object ProjectDpes {
@@ -73,6 +74,10 @@ object External {
   const val roomRuntime = "android.arch.persistence.room:runtime:${Versions.room}"
   const val roomRx = "android.arch.persistence.room:rxjava2:1.0.0"
   const val leakcanaryRelease = "com.squareup.leakcanary:leakcanary-android-no-op:1.5.4"
+}
+
+object Realm{
+
 }
 
 object Firebase {
