@@ -8,7 +8,7 @@ import io.realm.RealmQuery
 
 interface RxCrudRepository<M, RM, I> : Repository<M, RM, I> {
 
-    val gistDatabase: RealmQuery<RM>
+    val repositoryDb: RealmQuery<RM>
 
     fun delete(model: M): Completable
 

@@ -1,50 +1,59 @@
 package asvid.github.io.roomapp.data.gist
 
-import android.util.Log
+import asvid.github.io.roomapp.data.mappers.toModel
+import asvid.github.io.roomapp.data.mappers.toRealmModel
 import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.realm.Realm
 import io.realm.RealmQuery
-import io.realm.RealmResults
 import javax.inject.Inject
 
 
-class GistRepository @Inject constructor(override val gistDatabase: RealmQuery<Gist>) :
+class GistRepository @Inject constructor(val realm: Realm) :
         RxCrudRepository<GistModel, Gist, Long> {
+
+    override val repositoryDb: RealmQuery<Gist> = realm.where(Gist::class.java)
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
-            gistDatabase.equalTo("id", model.id).findFirst()?.deleteFromRealm()
+            Realm.getDefaultInstance().executeTransaction {
+                it.where(Gist::class.java).equalTo("id", model.id).findFirstAsync().deleteFromRealm()
+            }
         }
     }
 
     override fun deleteAll(models: Collection<GistModel>): Completable {
         return Completable.fromAction {
-            gistDatabase.findAll().deleteAllFromRealm()
+            Realm.getDefaultInstance().executeTransaction {
+                it.where(Gist::class.java).findAll().deleteAllFromRealm()
+            }
         }
     }
 
     override fun fetchAll(): Flowable<Collection<GistModel>> {
-        val flowable: Flowable<RealmResults<GistModel>>
-        flowable = gistDatabase.findAll()
-                .asFlowable()
+        return repositoryDb.findAll().let { it.asFlowable().map { it.map { it.toModel() } } }
 
-        return flowable
     }
 
     override fun fetchById(id: Long): Maybe<GistModel> {
-        TODO(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Maybe.fromAction { repositoryDb.equalTo("id", id).findFirstAsync() }
     }
 
     override fun save(model: GistModel): Single<GistModel> {
-        Log.d("GIST_REPO", "save: $model")
         return Single.fromCallable {
-            val id = gistDao.insert(model.toEntity())
-            model.id = id
+            Realm.getDefaultInstance().executeTransactionAsync {
+                if (model.id == null) {
+                    var maxId = it.where(Gist::class.java).max("id")?.toLong()
+                    if (maxId == null) maxId = 0
+                    model.id = ++maxId
+                }
+                val gist = it.copyToRealmOrUpdate(model.toRealmModel())
+                model.owner.toRealmModel().gists.add(gist)
+            }
             model
         }
     }
@@ -56,8 +65,7 @@ class GistRepository @Inject constructor(override val gistDatabase: RealmQuery<G
 
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            gistDao.update(model.toEntity())
-            model
+            realm.copyToRealmOrUpdate(model.toRealmModel()).toModel()
         }
     }
 }

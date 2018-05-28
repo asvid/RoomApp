@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.model.OwnerModel
@@ -24,9 +23,6 @@ class AddGistDialog : DialogFragment() {
         @Inject set
 
     lateinit var gistRepository: GistRepository
-        @Inject set
-
-    lateinit var gistWithOwnerRepository: GistWithOwnerRepository
         @Inject set
 
     lateinit var gistDescWrapper: TextInputLayout
@@ -63,6 +59,8 @@ class AddGistDialog : DialogFragment() {
             val spinnerArray = ArrayList<String>()
             it.map { spinnerArray.add(it.login) }
 
+
+//            TODO("crashes after closing dialog for no reason...")
             val adapter = ArrayAdapter<String>(
                     activity, android.R.layout.simple_spinner_item, spinnerArray)
 
@@ -75,8 +73,6 @@ class AddGistDialog : DialogFragment() {
     private fun saveGist() {
         val gistDesc = gistDescWrapper.editText?.text.toString()
         val owner = ownersList.elementAt(ownersSpinner.selectedItemPosition)
-        gistRepository.save(GistModel(null, gistDesc, owner.id!!, false, Date())).subscribe()
-
-//        gistWithOwnerRepository.save(GistWithOwnerModel(null, gistDesc, owner, false, Date())).subscribe()
+        gistRepository.save(GistModel(null, gistDesc, owner, false, Date())).subscribe()
     }
 }

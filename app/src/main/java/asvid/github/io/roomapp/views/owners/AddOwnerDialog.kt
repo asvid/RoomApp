@@ -4,13 +4,12 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
-import android.util.Log
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.OwnerModel
 import dagger.android.AndroidInjection
+import java.util.Arrays.asList
 import javax.inject.Inject
 
 
@@ -44,6 +43,6 @@ class AddOwnerDialog : DialogFragment() {
 
     private fun saveOwner() {
         val ownerLogin = ownerLoginWrapper.editText?.text.toString()
-        ownerRepository.save(OwnerModel(ownerLogin, null)).subscribe()
+        ownerRepository.save(OwnerModel(null, ownerLogin, asList())).subscribe()
     }
 }

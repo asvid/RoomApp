@@ -13,10 +13,8 @@ import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.R.layout
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.gistwithowner.GistWithOwnerRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
-import asvid.github.io.roomapp.model.GistWithOwnerModel
-import asvid.github.io.roomapp.model.toGistModel
+import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
 import asvid.github.io.roomapp.views.owners.OwnersIntent
@@ -36,9 +34,6 @@ class MainActivity : AppCompatActivity() {
         @Inject set
 
     lateinit var ownerRepository: OwnerRepository
-        @Inject set
-
-    lateinit var gistWithOwnerRepository: GistWithOwnerRepository
         @Inject set
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("MAIN_ACTIVITY", "Gists changed: $it")
                     Toast.makeText(this, "new gist!", Toast.LENGTH_SHORT).show()
 
-                    gistWithOwnerRepository.fetchAll()
+                    gistRepository.fetchAll()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     { onNext -> handleGistsChange(onNext) },
@@ -86,12 +81,12 @@ class MainActivity : AppCompatActivity() {
 
         adapter.itemStarredSubject
                 .subscribe {
-                    gistRepository.update(it.toGistModel()).subscribe()
-                    Log.d("MAIN_ACTIVITY", "star checkbox clicked: ${it.toGistModel()}")
+                    gistRepository.update(it).subscribe()
+                    Log.d("MAIN_ACTIVITY", "star checkbox clicked: ${it}")
                 }
     }
 
-    private fun handleGistsChange(onNext: Collection<GistWithOwnerModel>) {
+    private fun handleGistsChange(onNext: Collection<GistModel>) {
         Log.d("MAIN_ACTIVITY", "onNext $onNext")
         adapter.updateData(onNext.toList())
     }

@@ -94,7 +94,7 @@ class GistLoadService : Service() {
                 ownerRepository.fetchAll().subscribe {
                     val owner = it.getRandomElement() as OwnerModel
                     owner.let {
-                        val gist = GistModel(null, RandomStringGenerator.getString(), it.id!!, false, Date())
+                        val gist = GistModel(null, RandomStringGenerator.getString(), it, false, Date())
                         gistRepository.save(gist).subscribe()
                     }
                 }

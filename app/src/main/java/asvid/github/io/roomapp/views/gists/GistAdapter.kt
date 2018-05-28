@@ -10,7 +10,7 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.*
-import asvid.github.io.roomapp.model.GistWithOwnerModel
+import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.views.gists.GistAdapter.GistViewHolder
 import com.bumptech.glide.Glide
 import io.reactivex.subjects.PublishSubject
@@ -18,8 +18,8 @@ import java.util.*
 
 class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
-    private var items: List<GistWithOwnerModel>? = null
-    val itemStarredSubject: PublishSubject<GistWithOwnerModel> = PublishSubject.create<GistWithOwnerModel>()
+    private var items: List<GistModel>? = null
+    val itemStarredSubject: PublishSubject<GistModel> = PublishSubject.create<GistModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GistViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -45,7 +45,7 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
         })
     }
 
-    fun updateData(list: List<GistWithOwnerModel>) {
+    fun updateData(list: List<GistModel>) {
         items = list
         notifyDataSetChanged()
     }

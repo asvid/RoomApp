@@ -55,6 +55,7 @@ dependencies {
     implementation External.dagger
     implementation External.daggerSupport
     annotationProcessor Apt.daggerCompiler
+    annotationProcessor External.daggerProcessor
     kapt Apt.daggerCompiler
     kapt External.daggerProcessor
 }

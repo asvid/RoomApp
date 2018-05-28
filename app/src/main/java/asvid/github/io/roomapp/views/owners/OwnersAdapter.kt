@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import asvid.github.io.roomapp.R
-import asvid.github.io.roomapp.model.OwnerWithGistsModel
+import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.views.owners.OwnersAdapter.OwnerViewHolder
 import io.reactivex.subjects.PublishSubject
 
 class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
 
-    private var items: List<OwnerWithGistsModel>? = null
-    val itemDeleteSubject: PublishSubject<OwnerWithGistsModel> = PublishSubject.create<OwnerWithGistsModel>()
+    private var items: List<OwnerModel>? = null
+    val itemDeleteSubject: PublishSubject<OwnerModel> = PublishSubject.create<OwnerModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OwnersAdapter.OwnerViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -37,7 +37,7 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
         holder.setGistsNumber(item?.gists?.size)
     }
 
-    fun updateData(list: List<OwnerWithGistsModel>) {
+    fun updateData(list: List<OwnerModel>) {
         items = list
         notifyDataSetChanged()
     }

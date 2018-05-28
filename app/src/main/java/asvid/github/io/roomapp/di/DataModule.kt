@@ -1,9 +1,8 @@
 package asvid.github.io.roomapp.di
 
+import android.content.Context
 import asvid.github.io.roomapp.data.GistDatabase
-import asvid.github.io.roomapp.data.gist.Gist
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.owner.Owner
 import asvid.github.io.roomapp.data.owner.OwnerRepository
 import dagger.Module
 import dagger.Provides
@@ -14,18 +13,18 @@ import javax.inject.Singleton
 class DataModule {
 
     @Provides
-    fun provideRealm(): Realm {
-        GistDatabase.init()
+    fun provideRealm(context: Context): Realm {
+        GistDatabase.init(context)
         return Realm.getDefaultInstance()
     }
 
     @Singleton
     @Provides
-    fun gistRepository(): GistRepository = GistRepository(provideRealm().where(Gist::class.java))
+    fun gistRepository(context: Context): GistRepository = GistRepository(provideRealm(context))
 
     @Singleton
     @Provides
-    fun ownerRepository(): OwnerRepository = OwnerRepository(provideRealm().where(Owner::class.java))
+    fun ownerRepository(context: Context): OwnerRepository = OwnerRepository(provideRealm(context))
 
 
 }

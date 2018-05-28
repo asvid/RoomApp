@@ -11,9 +11,7 @@ import android.view.MenuItem
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.data.owner.OwnerRepository
-import asvid.github.io.roomapp.data.ownerwithgists.OwnerWithGistsRepository
-import asvid.github.io.roomapp.model.OwnerWithGistsModel
-import asvid.github.io.roomapp.model.toOwnerModel
+import asvid.github.io.roomapp.model.OwnerModel
 import asvid.github.io.roomapp.views.gists.GistsIntent
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,8 +25,6 @@ fun Context.OwnersIntent(): Intent {
 
 class OwnersActivity : AppCompatActivity() {
 
-    lateinit var ownersWithGistsRepository: OwnerWithGistsRepository
-        @Inject set
     lateinit var ownersRepository: OwnerRepository
         @Inject set
 
@@ -55,10 +51,10 @@ class OwnersActivity : AppCompatActivity() {
                 .subscribe {
                     Log.d("OWNERS", "Owners change: $it")
 
-                    ownersWithGistsRepository.getAllOwnersWithGists()
+                    ownersRepository.fetchAll()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
-                                    { onNext -> handleOwnersChange(onNext) },
+                                    { onNext -> handleOwnersChange(onNext.toList()) },
                                     { onError -> Log.d("OWNERS", "error: $onError") },
                                     { Log.d("OWNERS", "onComplete") }
                             )
@@ -66,11 +62,11 @@ class OwnersActivity : AppCompatActivity() {
 
         adapter.itemDeleteSubject.subscribe {
             Log.d("OWNERS", "deleting $it")
-            ownersRepository.delete(it.toOwnerModel()).subscribe()
+            ownersRepository.delete(it).subscribe()
         }
     }
 
-    private fun handleOwnersChange(onNext: List<OwnerWithGistsModel>) {
+    private fun handleOwnersChange(onNext: List<OwnerModel>) {
         Log.d("OWNERS", "onNext: $onNext")
         adapter.updateData(onNext)
     }
