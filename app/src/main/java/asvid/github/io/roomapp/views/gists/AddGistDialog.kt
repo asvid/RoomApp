@@ -13,6 +13,7 @@ import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.model.OwnerModel
 import dagger.android.AndroidInjection
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -54,19 +55,19 @@ class AddGistDialog : DialogFragment() {
     }
 
     private fun populateOwnersSpinner() {
-        ownerRepository.fetchAll().subscribe {
+        ownerRepository.fetchAll().subscribe({
             ownersList = it
             val spinnerArray = ArrayList<String>()
             it.map { spinnerArray.add(it.login) }
 
-
+            Timber.d("owners array: $spinnerArray")
 //            TODO("crashes after closing dialog for no reason...")
             val adapter = ArrayAdapter<String>(
                     activity, android.R.layout.simple_spinner_item, spinnerArray)
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             ownersSpinner.adapter = adapter
-        }
+        }, { Timber.e("error populating owners spinner: $it") })
 
     }
 

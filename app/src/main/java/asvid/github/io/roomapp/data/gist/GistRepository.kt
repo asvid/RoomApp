@@ -2,6 +2,8 @@ package asvid.github.io.roomapp.data.gist
 
 import asvid.github.io.roomapp.data.mappers.toModel
 import asvid.github.io.roomapp.data.mappers.toRealmModel
+import asvid.github.io.roomapp.data.owner.Owner
+import asvid.github.io.roomapp.data.owner.OwnerFields
 import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
 import io.reactivex.Completable
@@ -9,50 +11,56 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
-import io.realm.RealmQuery
-import javax.inject.Inject
+import timber.log.Timber
 
-
-class GistRepository @Inject constructor(val realm: Realm) :
-        RxCrudRepository<GistModel, Gist, Long> {
-
-    override val repositoryDb: RealmQuery<Gist> = realm.where(Gist::class.java)
+class GistRepository : RxCrudRepository<GistModel, Long> {
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().executeTransaction {
-                it.where(Gist::class.java).equalTo("id", model.id).findFirstAsync().deleteFromRealm()
+            Realm.getDefaultInstance().use {
+                it.where(Gist::class.java).equalTo(GistFields.ID, model.id).findFirstAsync().deleteFromRealm()
             }
         }
     }
 
     override fun deleteAll(models: Collection<GistModel>): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().executeTransaction {
-                it.where(Gist::class.java).findAll().deleteAllFromRealm()
+            Realm.getDefaultInstance().use {
+                it.executeTransaction {
+                    it.where(Gist::class.java).findAll().deleteAllFromRealm()
+                }
             }
         }
     }
 
-    override fun fetchAll(): Flowable<Collection<GistModel>> {
-        return repositoryDb.findAll().let { it.asFlowable().map { it.map { it.toModel() } } }
+    private fun getGistRealm() = Realm.getDefaultInstance().use {
+        it.where(Gist::class.java)
+    }
 
+    override fun fetchAll(): Flowable<Collection<GistModel>> {
+        return getGistRealm().findAll().let { it.asFlowable().map { it.map { it.toModel() } } }
     }
 
     override fun fetchById(id: Long): Maybe<GistModel> {
-        return Maybe.fromAction { repositoryDb.equalTo("id", id).findFirstAsync() }
+        return Maybe.fromAction { getGistRealm().equalTo(GistFields.ID, id).findFirstAsync() }
     }
 
     override fun save(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            Realm.getDefaultInstance().executeTransactionAsync {
-                if (model.id == null) {
-                    var maxId = it.where(Gist::class.java).max("id")?.toLong()
-                    if (maxId == null) maxId = 0
-                    model.id = ++maxId
+            Realm.getDefaultInstance().use {
+                it.executeTransaction {
+                    if (model.id == null) {
+                        var maxId = it.where(Gist::class.java).max(GistFields.ID)?.toLong()
+                        if (maxId == null) maxId = 0
+                        model.id = ++maxId
+                    }
+                    val gist = model.toRealmModel()
+                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner.id).findFirstAsync()
+                    owner.gists?.add(gist)
+                    Timber.d("owner: $owner")
+                    Timber.d("gist: $gist")
+                    it.copyToRealmOrUpdate(owner)
                 }
-                val gist = it.copyToRealmOrUpdate(model.toRealmModel())
-                model.owner.toRealmModel().gists.add(gist)
             }
             model
         }
@@ -65,7 +73,9 @@ class GistRepository @Inject constructor(val realm: Realm) :
 
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            realm.copyToRealmOrUpdate(model.toRealmModel()).toModel()
+            Realm.getDefaultInstance().use {
+                it.copyToRealmOrUpdate(model.toRealmModel()).toModel()
+            }
         }
     }
 }

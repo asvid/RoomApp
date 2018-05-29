@@ -1,14 +1,19 @@
 package asvid.github.io.roomapp.data.mappers
 
 import asvid.github.io.roomapp.data.gist.Gist
-import asvid.github.io.roomapp.data.owner.Owner
 import asvid.github.io.roomapp.model.GistModel
-import io.realm.RealmResults
+import io.realm.Realm
 
 fun GistModel.toRealmModel(): Gist {
-    return Gist(this.id, this.description, RealmResults<Owner>() this.owner.toRealmModel(), this.starred, this.date)
+    val gist = Realm.getDefaultInstance().createObject(Gist::class.java, this.id)
+
+    gist.description = this.description
+    gist.starred = this.starred
+    gist.date = this.date
+
+    return gist
 }
 
 fun Gist.toModel(): GistModel {
-    return GistModel(this.id, this.description, this.owner!!.first()!!.toModel(), this.starred, this.date)
+    return GistModel(this.id, this.description, this.owner.orEmpty().first().toModel(), this.starred, this.date)
 }

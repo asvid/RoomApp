@@ -3,8 +3,10 @@ package asvid.github.io.roomapp.data.owner
 import asvid.github.io.roomapp.data.gist.Gist
 import io.realm.RealmList
 import io.realm.RealmObject
-import io.realm.RealmResults
-import io.realm.annotations.*
+import io.realm.annotations.Ignore
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmClass
+import io.realm.annotations.Required
 
 @RealmClass
 open class Owner(
@@ -14,7 +16,7 @@ open class Owner(
         @Required
         var login: String = "",
 
-        var gists: RealmList<Gist> = RealmList(),
+        var gists: RealmList<Gist>? = null,
 
         @Ignore
         var gistsNumber: Int = gists?.size ?: 0)

@@ -4,11 +4,8 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.realm.RealmQuery
 
-interface RxCrudRepository<M, RM, I> : Repository<M, RM, I> {
-
-    val repositoryDb: RealmQuery<RM>
+interface RxCrudRepository<M, I> : Repository<M, I> {
 
     fun delete(model: M): Completable
 

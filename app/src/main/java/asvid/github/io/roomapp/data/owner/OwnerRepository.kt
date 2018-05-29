@@ -9,23 +9,20 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
-import io.realm.RealmQuery
 import timber.log.Timber
-import javax.inject.Inject
 
-class OwnerRepository @Inject constructor(val realm: Realm) :
-        RxCrudRepository<OwnerModel, Owner, Long> {
-
-    override val repositoryDb: RealmQuery<Owner> = realm.where(Owner::class.java)
+class OwnerRepository : RxCrudRepository<OwnerModel, Long> {
 
     override fun delete(model: OwnerModel): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().executeTransaction {
-                val ownerToDelete = it.where(Owner::class.java)
-                        .equalTo("id", model.id)
-                        .findFirstAsync()
-                ownerToDelete.gists.deleteAllFromRealm()
-                ownerToDelete.deleteFromRealm()
+            Realm.getDefaultInstance().use {
+                it.executeTransaction {
+                    val ownerToDelete = it.where(Owner::class.java)
+                            .equalTo(OwnerFields.ID, model.id)
+                            .findFirstAsync()
+                    ownerToDelete.gists?.deleteAllFromRealm()
+                    ownerToDelete.deleteFromRealm()
+                }
             }
         }
     }
@@ -39,12 +36,14 @@ class OwnerRepository @Inject constructor(val realm: Realm) :
     }
 
     override fun fetchAll(): Flowable<Collection<OwnerModel>> {
-        return repositoryDb.findAll()
+        return getOwnerRealm().findAll()
                 .asFlowable().map { it.map { it.toModel() } }
     }
 
+    private fun getOwnerRealm() = Realm.getDefaultInstance().where(Owner::class.java)
+
     override fun fetchById(id: Long): Maybe<OwnerModel> {
-        return Maybe.fromAction { repositoryDb.equalTo("id", id).findFirstAsync() }
+        return Maybe.fromAction { getOwnerRealm().equalTo(OwnerFields.ID, id).findFirstAsync() }
     }
 
     override fun save(model: OwnerModel): Single<OwnerModel> {
@@ -65,9 +64,7 @@ class OwnerRepository @Inject constructor(val realm: Realm) :
     }
 
     override fun saveAll(models: Collection<OwnerModel>): Single<Collection<OwnerModel>> {
-
-        TODO(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

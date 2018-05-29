@@ -1,6 +1,7 @@
 package asvid.github.io.roomapp.data.gist
 
 import asvid.github.io.roomapp.data.owner.Owner
+import asvid.github.io.roomapp.data.owner.OwnerFields
 import io.realm.RealmObject
 import io.realm.RealmResults
 import io.realm.annotations.LinkingObjects
@@ -15,7 +16,7 @@ open class Gist(
         @Required
         var id: Long? = null,
         var description: String = "",
-        @LinkingObjects("gists")
+        @LinkingObjects(OwnerFields.GISTS.`$`)
         val owner: RealmResults<Owner>? = null,
         var starred: Boolean = false,
         var date: Date = Date()

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Fragment
 import android.app.Service
+import asvid.github.io.roomapp.data.GistDatabase
 import asvid.github.io.roomapp.di.DaggerAppComponent
 import dagger.android.*
 import timber.log.Timber
@@ -36,6 +37,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector, HasFragmentI
     }
 
     private fun init() {
+        GistDatabase.init(this)
         DaggerAppComponent
                 .builder()
                 .application(this)
