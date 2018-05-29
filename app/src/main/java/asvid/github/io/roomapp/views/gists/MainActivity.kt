@@ -13,7 +13,6 @@ import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.R.layout
 import asvid.github.io.roomapp.data.gist.GistRepository
-import asvid.github.io.roomapp.data.owner.OwnerRepository
 import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.services.GistLoadService
 import asvid.github.io.roomapp.services.GistLoadService.ACTION
@@ -31,9 +30,6 @@ fun Context.GistsIntent(): Intent {
 class MainActivity : AppCompatActivity() {
 
     lateinit var gistRepository: GistRepository
-        @Inject set
-
-    lateinit var ownerRepository: OwnerRepository
         @Inject set
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,26 +54,13 @@ class MainActivity : AppCompatActivity() {
         gistList.adapter = adapter
         gistList.layoutManager = LinearLayoutManager(this)
 
-        ownerRepository.fetchAll()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.d("MAIN_ACTIVITY", "Owners changed: $it")
-                }
-
         gistRepository.fetchAll()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.d("MAIN_ACTIVITY", "Gists changed: $it")
-                    Toast.makeText(this, "new gist!", Toast.LENGTH_SHORT).show()
-
-                    gistRepository.fetchAll()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    { onNext -> handleGistsChange(onNext) },
-                                    { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
-                                    { Log.d("MAIN_ACTIVITY", "onComplete") }
-                            )
-                }
+                .subscribe(
+                        { onNext -> handleGistsChange(onNext) },
+                        { onError -> Log.d("MAIN_ACTIVITY", "error: $onError") },
+                        { Log.d("MAIN_ACTIVITY", "onComplete") }
+                )
 
         adapter.itemStarredSubject
                 .subscribe {
@@ -87,7 +70,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleGistsChange(onNext: Collection<GistModel>) {
-        Log.d("MAIN_ACTIVITY", "onNext $onNext")
+        Log.d("MAIN_ACTIVITY", "Gists changed: $onNext")
+        Toast.makeText(this, "new gist!", Toast.LENGTH_SHORT).show()
         adapter.updateData(onNext.toList())
     }
 

@@ -15,5 +15,5 @@ fun GistModel.toRealmModel(): Gist {
 }
 
 fun Gist.toModel(): GistModel {
-    return GistModel(this.id, this.description, this.owner.orEmpty().first().toModel(), this.starred, this.date)
+    return GistModel(this.id, this.description, this.owner!!.first()!!.toSimpleModel(), this.starred, this.date)
 }

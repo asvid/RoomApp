@@ -33,12 +33,17 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
         }
     }
 
-    private fun getGistRealm() = Realm.getDefaultInstance().use {
-        it.where(Gist::class.java)
-    }
+    private fun getGistRealm() = Realm.getDefaultInstance().where(Gist::class.java)
 
     override fun fetchAll(): Flowable<Collection<GistModel>> {
-        return getGistRealm().findAll().let { it.asFlowable().map { it.map { it.toModel() } } }
+        return getGistRealm().findAll()
+                .let {
+                    it.asFlowable().map {
+                        it.map {
+                            it.toModel()
+                        }
+                    }
+                }
     }
 
     override fun fetchById(id: Long): Maybe<GistModel> {
@@ -55,7 +60,7 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
                         model.id = ++maxId
                     }
                     val gist = model.toRealmModel()
-                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner.id).findFirstAsync()
+                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirstAsync()
                     owner.gists?.add(gist)
                     Timber.d("owner: $owner")
                     Timber.d("gist: $gist")
@@ -74,8 +79,9 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
             Realm.getDefaultInstance().use {
-                it.copyToRealmOrUpdate(model.toRealmModel()).toModel()
+                it.copyToRealmOrUpdate(model.toRealmModel())
             }
+            model
         }
     }
 }

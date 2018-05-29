@@ -14,5 +14,11 @@ fun OwnerModel.toRealmModel(): Owner {
 }
 
 fun Owner.toModel(): OwnerModel {
+    val ownerModel = OwnerModel(this.id, this.login)
+    ownerModel.gists = this.gists?.map { it.toModel() } ?: listOf()
+    return ownerModel
+}
+
+fun Owner.toSimpleModel(): OwnerModel {
     return OwnerModel(this.id, this.login)
 }

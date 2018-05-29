@@ -14,6 +14,7 @@ import asvid.github.io.roomapp.model.GistModel
 import asvid.github.io.roomapp.views.gists.GistAdapter.GistViewHolder
 import com.bumptech.glide.Glide
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import java.util.*
 
 class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
@@ -33,6 +34,7 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
     override fun onBindViewHolder(holder: GistViewHolder, position: Int) {
         val item = items?.get(position)
+        Timber.d("gist list item: $item")
         holder.setStarredListener(null)
         holder.setId(item?.id.toString())
         holder.setDescription(item?.description)

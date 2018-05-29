@@ -48,17 +48,11 @@ class OwnersActivity : AppCompatActivity() {
         ownersList.layoutManager = LinearLayoutManager(this)
 
         ownersRepository.fetchAll().observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.d("OWNERS", "Owners change: $it")
-
-                    ownersRepository.fetchAll()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    { onNext -> handleOwnersChange(onNext.toList()) },
-                                    { onError -> Log.d("OWNERS", "error: $onError") },
-                                    { Log.d("OWNERS", "onComplete") }
-                            )
-                }
+                .subscribe(
+                        { onNext -> handleOwnersChange(onNext.toList()) },
+                        { onError -> Log.d("OWNERS", "error: $onError") },
+                        { Log.d("OWNERS", "onComplete") }
+                )
 
         adapter.itemDeleteSubject.subscribe {
             Log.d("OWNERS", "deleting $it")
