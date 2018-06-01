@@ -40,6 +40,12 @@ class OwnerRepository : RxCrudRepository<OwnerModel, Long> {
                 .asFlowable().map { it.map { it.toModel() } }
     }
 
+    fun fetchAllOnce(): Single<Collection<OwnerModel>> {
+        return Single.fromCallable {
+            getOwnerRealm().findAll().map { it.toModel() }
+        }
+    }
+
     private fun getOwnerRealm() = Realm.getDefaultInstance().where(Owner::class.java)
 
     override fun fetchById(id: Long): Maybe<OwnerModel> {

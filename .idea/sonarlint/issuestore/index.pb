@@ -33,3 +33,11 @@ k
 ;app/src/main/java/asvid/github/io/roomapp/data/gist/Gist.kt,6\7\6726b385216ef951d1e7d41948ab616385f3e352
 u
 Eapp/src/main/java/asvid/github/io/roomapp/data/mappers/GistMappers.kt,f\3\f32a5bf626d0f181fa0610435adc4c0ef54f4ffe
+‰
+Yapp/build/generated/source/kapt/debug/asvid/github/io/roomapp/data/owner/OwnerFields.java,0\5\058cd3425dc53adc5d93a0a9c6d7b1d5496f4c3e
+‡
+Wapp/build/generated/source/kapt/debug/asvid/github/io/roomapp/data/gist/GistFields.java,1\8\1845bd60ec1ab6a34108539eb03116f09d6dc595
+l
+<app/src/main/java/asvid/github/io/roomapp/model/GistModel.kt,8\7\8710d65952554ac834d3e23d16adb29935c5ba21
+t
+Dapp/src/main/java/asvid/github/io/roomapp/views/gists/GistAdapter.kt,a\6\a69b38f674079f1da09bf7d9d1f055da1b5e2914

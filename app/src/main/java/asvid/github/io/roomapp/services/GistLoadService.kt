@@ -3,10 +3,8 @@ package asvid.github.io.roomapp.services
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
-import android.util.Log
 import asvid.github.io.roomapp.R.mipmap
 import asvid.github.io.roomapp.data.gist.GistRepository
 import asvid.github.io.roomapp.data.owner.OwnerRepository
@@ -16,7 +14,12 @@ import asvid.github.io.roomapp.utils.RandomStringGenerator
 import asvid.github.io.roomapp.utils.getRandomElement
 import asvid.github.io.roomapp.views.gists.MainActivity
 import dagger.android.AndroidInjection
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.internal.schedulers.IoScheduler
+import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GistLoadService : Service() {
@@ -26,10 +29,6 @@ class GistLoadService : Service() {
 
     lateinit var ownerRepository: OwnerRepository
         @Inject set
-
-    var handler: Handler? = null
-    val delay = 10 * 1000
-    lateinit var runnable: Runnable
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -67,41 +66,41 @@ class GistLoadService : Service() {
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .build()
-            startForeground(NOTIFICATION_ID.FOREGROUND_SERVICE,
-                    notification)
+            startForeground(NOTIFICATION_ID.FOREGROUND_SERVICE, notification)
 
             startLoadingData()
         } else if (intent.action == ACTION.STOPFOREGROUND_ACTION) {
-            Log.e("GIST_SERVICE", "stop service")
-            handler?.removeCallbacks(runnable)
-            handler = null
+            Timber.d("STOP creating gists")
+            intervalRunner.dispose()
             stopForeground(true)
             stopSelf()
         }
         return Service.START_STICKY
     }
 
+    private lateinit var intervalRunner: Disposable
+
     private fun startLoadingData() {
-        handler = Handler()
-        runnable = createRunnable()
-        handler?.post(runnable)
-    }
+        Timber.d("start creating gists")
+        intervalRunner = Observable
+                .interval(10, TimeUnit.SECONDS)
+                .startWith(0)
+                .subscribeOn(IoScheduler())
+                .doOnNext {
+                    ownerRepository.fetchAllOnce().subscribe { owners ->
+                        Timber.d("onNext Owners list: $owners")
+                        val owner = owners.getRandomElement() as OwnerModel
+                        Timber.d("adding gist to owner: $owner")
+                        owner.let {
+                            val gist = GistModel(null, RandomStringGenerator.getString(), it, false, Date())
+                            Timber.d("gist added from service: $gist")
+                            gistRepository.save(gist).subscribe { onNext ->
+                                Timber.d("gist saved: $onNext")
 
-    private fun createRunnable(): Runnable {
-        return object : Runnable {
-            override fun run() {
-
-                ownerRepository.fetchAll().subscribe {
-                    val owner = it.getRandomElement() as OwnerModel
-                    owner.let {
-                        val gist = GistModel(null, RandomStringGenerator.getString(), it, false, Date())
-                        gistRepository.save(gist).subscribe()
+                            }
+                        }
                     }
-                }
-
-                handler?.postDelayed(this, delay.toLong())
-            }
-        }
+                }.subscribe()
     }
 
     override fun onDestroy() {

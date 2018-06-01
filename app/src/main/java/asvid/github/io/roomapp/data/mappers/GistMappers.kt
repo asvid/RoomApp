@@ -1,17 +1,38 @@
 package asvid.github.io.roomapp.data.mappers
 
 import asvid.github.io.roomapp.data.gist.Gist
+import asvid.github.io.roomapp.data.gist.GistFields
 import asvid.github.io.roomapp.model.GistModel
 import io.realm.Realm
 
 fun GistModel.toRealmModel(): Gist {
-    val gist = Realm.getDefaultInstance().createObject(Gist::class.java, this.id)
+    if (this.id == null) {
+        val gist = Realm.getDefaultInstance()
+                .use {
+                    var maxId = it.where(Gist::class.java).max(GistFields.ID)?.toLong()
+                    if (maxId == null) maxId = 0
+                    it.createObject(Gist::class.java, ++maxId)
+                }
 
-    gist.description = this.description
-    gist.starred = this.starred
-    gist.date = this.date
+        gist.description = this.description
+        gist.starred = this.starred
+        gist.date = this.date
 
-    return gist
+        return gist
+    } else {
+        val gist = Realm.getDefaultInstance()
+                .use {
+                    it.where(Gist::class.java)
+                            .equalTo(GistFields.ID, this.id)
+                            .findFirstAsync()
+                }
+
+        gist.description = this.description
+        gist.starred = this.starred
+        gist.date = this.date
+
+        return gist
+    }
 }
 
 fun Gist.toModel(): GistModel {

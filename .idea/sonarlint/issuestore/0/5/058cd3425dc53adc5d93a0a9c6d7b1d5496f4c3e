@@ -1,0 +1,5 @@
+
+Vsquid:S1118":Add a private constructor to hide the implicit public one.(Ó¿àŠ8ë¹ùìº,
+Vsquid:S1118":Add a private constructor to hide the implicit public one.(İÃ„ª8ë¹ùìº,
+wsquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ºÄº«8ë¹ùìº,
+squid:UselessImportCheck"QRemove this unnecessary import: java.lang classes are always implicitly imported.(ôİÕıÿÿÿÿ8ë¹ùìº,

@@ -53,18 +53,13 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
     override fun save(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
             Realm.getDefaultInstance().use {
+                it.refresh()
                 it.executeTransaction {
-                    if (model.id == null) {
-                        var maxId = it.where(Gist::class.java).max(GistFields.ID)?.toLong()
-                        if (maxId == null) maxId = 0
-                        model.id = ++maxId
-                    }
                     val gist = model.toRealmModel()
-                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirstAsync()
-                    owner.gists?.add(gist)
-                    Timber.d("owner: $owner")
-                    Timber.d("gist: $gist")
+                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirst()
+                    owner?.gists?.add(gist)
                     it.copyToRealmOrUpdate(owner)
+                    model.id = gist.id
                 }
             }
             model
@@ -79,7 +74,9 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
             Realm.getDefaultInstance().use {
-                it.copyToRealmOrUpdate(model.toRealmModel())
+                it.executeTransaction {
+                    it.insertOrUpdate(model.toRealmModel())
+                }
             }
             model
         }
