@@ -25,7 +25,7 @@ class DataModule {
         Realm.init(context)
         Timber.d("daggerMap: $versionMigrations")
         return RealmConfiguration.Builder()
-                .schemaVersion(2)
+                .schemaVersion(1)
                 .migration(Migration(versionMigrations))
 //                .deleteRealmIfMigrationNeeded()
                 .build()

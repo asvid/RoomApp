@@ -15,7 +15,7 @@ open class Owner(
         var id: Long? = null,
         @Required
         var login: String = "",
-        var avatarUrl: String = "",
+        var avatarUrl: String? = "",
 
         var gists: RealmList<Gist>? = null,
 

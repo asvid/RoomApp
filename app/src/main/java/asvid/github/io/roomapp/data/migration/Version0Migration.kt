@@ -6,22 +6,21 @@ import io.realm.RealmObjectSchema
 import timber.log.Timber
 
 
-class Version1Migration : VersionMigration {
+class Version0Migration : VersionMigration {
 
     private val OWNER = "Owner"
 
     /************************************************
-     * // Version 2
+     * // Version 1
      * class Owner
      * String avatarUrl //added
      */
     override fun migrate(realm: DynamicRealm, oldVersion: Long) {
-        if (oldVersion == 1L) {
+        if (oldVersion == 0L) {
             val ownerSchema = getObjectSchema(realm)
             ownerSchema!!.addField(OwnerFields.AVATAR_URL, String::class.java)
-                    .transform { obj -> obj.setString(OwnerFields.AVATAR_URL, "") }
 
-            Timber.d("migration complete")
+            Timber.d("migration complete $ownerSchema")
         }
     }
 
