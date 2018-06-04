@@ -11,13 +11,13 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
-import timber.log.Timber
+import javax.inject.Inject
 
-class GistRepository : RxCrudRepository<GistModel, Long> {
+class GistRepository @Inject constructor(val realm: Realm) : RxCrudRepository<GistModel, Long> {
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().use {
+            realm.use {
                 it.where(Gist::class.java).equalTo(GistFields.ID, model.id).findFirstAsync().deleteFromRealm()
             }
         }
@@ -25,7 +25,7 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
 
     override fun deleteAll(models: Collection<GistModel>): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().use {
+            realm.use {
                 it.executeTransaction {
                     it.where(Gist::class.java).findAll().deleteAllFromRealm()
                 }
@@ -33,7 +33,7 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
         }
     }
 
-    private fun getGistRealm() = Realm.getDefaultInstance().where(Gist::class.java)
+    private fun getGistRealm() = realm.where(Gist::class.java)
 
     override fun fetchAll(): Flowable<Collection<GistModel>> {
         return getGistRealm().findAll()
@@ -52,7 +52,7 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
 
     override fun save(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            Realm.getDefaultInstance().use {
+            realm.use {
                 it.refresh()
                 it.executeTransaction {
                     val gist = model.toRealmModel()
@@ -73,7 +73,7 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
 
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            Realm.getDefaultInstance().use {
+            realm.use {
                 it.executeTransaction {
                     it.insertOrUpdate(model.toRealmModel())
                 }
