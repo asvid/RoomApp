@@ -10,7 +10,7 @@ object GistDatabase {
     fun init(context: Context) {
         Realm.init(context)
         val realmConfiguration = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
+                .schemaVersion(0)
                 .build()
         Realm.setDefaultConfiguration(realmConfiguration)
     }
