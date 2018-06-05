@@ -9,14 +9,16 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
+import io.realm.RealmConfiguration
+import io.realm.RealmQuery
 import timber.log.Timber
 import javax.inject.Inject
 
-class OwnerRepository @Inject constructor(val realm: Realm) : RxCrudRepository<OwnerModel, Long> {
+class OwnerRepository @Inject constructor(private val realmConfiguration: RealmConfiguration) : RxCrudRepository<OwnerModel, Long> {
 
     override fun delete(model: OwnerModel): Completable {
         return Completable.fromAction {
-            realm.use {
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
                     val ownerToDelete = it.where(Owner::class.java)
                             .equalTo(OwnerFields.ID, model.id)
@@ -30,32 +32,49 @@ class OwnerRepository @Inject constructor(val realm: Realm) : RxCrudRepository<O
 
     override fun deleteAll(models: Collection<OwnerModel>): Completable {
         return Completable.fromAction {
-            realm.executeTransaction {
+            Realm.getInstance(realmConfiguration).executeTransaction {
                 it.where(Owner::class.java).findAll().deleteAllFromRealm()
             }
         }
     }
 
     override fun fetchAll(): Flowable<Collection<OwnerModel>> {
-        return getOwnerRealm().findAll()
-                .asFlowable().map { it.map { it.toModel() } }
+        return Realm.getInstance(realmConfiguration)
+                .where(Owner::class.java)
+                .findAll()
+                .asFlowable()
+                .map {
+                    it.map {
+                        it.toModel()
+                    }
+                }
     }
+
 
     fun fetchAllOnce(): Single<Collection<OwnerModel>> {
         return Single.fromCallable {
-            getOwnerRealm().findAll().map { it.toModel() }
+            Realm.getInstance(realmConfiguration)
+                    .where(Owner::class.java).findAll()
+                    .map {
+                        it.toModel()
+                    }
         }
     }
 
-    private fun getOwnerRealm() = realm.where(Owner::class.java)
+    private fun <T> realmAction(block: RealmQuery<Owner>.() -> T): T {
+        return Realm.getInstance(realmConfiguration).use {
+            return@use it.where(Owner::class.java)
+                    .block()
+        }
+    }
 
     override fun fetchById(id: Long): Maybe<OwnerModel> {
-        return Maybe.fromAction { getOwnerRealm().equalTo(OwnerFields.ID, id).findFirstAsync() }
+        return Maybe.fromAction { realmAction { equalTo(OwnerFields.ID, id).findFirstAsync() } }
     }
 
     override fun save(model: OwnerModel): Single<OwnerModel> {
         return Single.fromCallable {
-            realm.executeTransactionAsync {
+            Realm.getInstance(realmConfiguration).executeTransactionAsync {
                 if (model.id == null) {
                     var maxId = it.where(Owner::class.java).max("id")?.toLong()
                     Timber.d("maxId: $maxId")
@@ -63,8 +82,7 @@ class OwnerRepository @Inject constructor(val realm: Realm) : RxCrudRepository<O
                     model.id = ++maxId
                 }
                 Timber.d("owner: $model")
-                it.copyToRealmOrUpdate(model.toRealmModel())
-
+                it.copyToRealmOrUpdate(model.toRealmModel(it))
             }
             model
         }

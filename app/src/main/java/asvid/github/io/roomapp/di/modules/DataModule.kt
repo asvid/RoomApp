@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import timber.log.Timber
 import javax.inject.Provider
 import javax.inject.Singleton
 
@@ -23,27 +22,19 @@ class DataModule {
             context: Context,
             versionMigrations: Map<Int, @JvmSuppressWildcards Provider<VersionMigration>>): RealmConfiguration {
         Realm.init(context)
-        Timber.d("daggerMap: $versionMigrations")
         return RealmConfiguration.Builder()
                 .schemaVersion(1)
                 .migration(Migration(versionMigrations))
-//                .deleteRealmIfMigrationNeeded()
                 .build()
     }
 
-    @Provides
     @Singleton
-    fun provideRealm(realmConfiguration: RealmConfiguration): Realm {
-        return Realm.getInstance(realmConfiguration)
-    }
+    @Provides
+    fun gistRepository(realmConfiguration: RealmConfiguration): GistRepository = GistRepository(realmConfiguration)
 
     @Singleton
     @Provides
-    fun gistRepository(realm: Realm): GistRepository = GistRepository(realm)
-
-    @Singleton
-    @Provides
-    fun ownerRepository(realm: Realm): OwnerRepository = OwnerRepository(realm)
+    fun ownerRepository(realmConfiguration: RealmConfiguration): OwnerRepository = OwnerRepository(realmConfiguration)
 
 
 }

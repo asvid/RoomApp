@@ -47,7 +47,8 @@ class OwnersActivity : AppCompatActivity() {
         ownersList.adapter = adapter
         ownersList.layoutManager = LinearLayoutManager(this)
 
-        ownersRepository.fetchAll().observeOn(AndroidSchedulers.mainThread())
+        ownersRepository.fetchAll()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { onNext -> handleOwnersChange(onNext.toList()) },
                         { onError -> Log.d("OWNERS", "error: $onError") },

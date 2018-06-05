@@ -6,6 +6,8 @@ import android.app.Fragment
 import android.app.Service
 import asvid.github.io.roomapp.di.components.DaggerAppComponent
 import dagger.android.*
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import timber.log.Timber
 import javax.inject.Inject
 

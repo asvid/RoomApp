@@ -11,13 +11,15 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
+import io.realm.RealmConfiguration
+import io.realm.RealmQuery
 import javax.inject.Inject
 
-class GistRepository @Inject constructor(val realm: Realm) : RxCrudRepository<GistModel, Long> {
+class GistRepository @Inject constructor(private val realmConfiguration: RealmConfiguration) : RxCrudRepository<GistModel, Long> {
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
-            realm.use {
+            Realm.getInstance(realmConfiguration).use {
                 it.where(Gist::class.java).equalTo(GistFields.ID, model.id).findFirstAsync().deleteFromRealm()
             }
         }
@@ -25,7 +27,7 @@ class GistRepository @Inject constructor(val realm: Realm) : RxCrudRepository<Gi
 
     override fun deleteAll(models: Collection<GistModel>): Completable {
         return Completable.fromAction {
-            realm.use {
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
                     it.where(Gist::class.java).findAll().deleteAllFromRealm()
                 }
@@ -33,29 +35,38 @@ class GistRepository @Inject constructor(val realm: Realm) : RxCrudRepository<Gi
         }
     }
 
-    private fun getGistRealm() = realm.where(Gist::class.java)
-
-    override fun fetchAll(): Flowable<Collection<GistModel>> {
-        return getGistRealm().findAll()
-                .let {
-                    it.asFlowable().map {
-                        it.map {
-                            it.toModel()
-                        }
-                    }
-                }
+    private fun <T> realmAction(block: RealmQuery<Gist>.() -> T): T {
+        return Realm.getInstance(realmConfiguration).use {
+            return@use it.where(Gist::class.java)
+                    .block()
+        }
     }
 
+    override fun fetchAll(): Flowable<Collection<GistModel>> {
+        return Realm.getInstance(realmConfiguration)
+                .where(Gist::class.java)
+                .findAll()
+                .asFlowable()
+                .map {
+                    it.map {
+                        it.toModel()
+                    }
+                }
+
+    }
+
+
     override fun fetchById(id: Long): Maybe<GistModel> {
-        return Maybe.fromAction { getGistRealm().equalTo(GistFields.ID, id).findFirstAsync() }
+        return Maybe.fromAction {
+            realmAction { equalTo(GistFields.ID, id).findFirstAsync() }
+        }
     }
 
     override fun save(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            realm.use {
-                it.refresh()
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
-                    val gist = model.toRealmModel()
+                    val gist = model.toRealmModel(it)
                     val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirst()
                     owner?.gists?.add(gist)
                     it.copyToRealmOrUpdate(owner)
@@ -73,9 +84,9 @@ class GistRepository @Inject constructor(val realm: Realm) : RxCrudRepository<Gi
 
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            realm.use {
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
-                    it.insertOrUpdate(model.toRealmModel())
+                    it.insertOrUpdate(model.toRealmModel(it))
                 }
             }
             model

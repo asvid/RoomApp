@@ -5,9 +5,10 @@ import asvid.github.io.roomapp.data.gist.GistFields
 import asvid.github.io.roomapp.model.GistModel
 import io.realm.Realm
 
-fun GistModel.toRealmModel(): Gist {
+fun GistModel.toRealmModel(realm: Realm): Gist {
+
     if (this.id == null) {
-        val gist = Realm.getDefaultInstance()
+        val gist = realm
                 .use {
                     var maxId = it.where(Gist::class.java).max(GistFields.ID)?.toLong()
                     if (maxId == null) maxId = 0
@@ -20,7 +21,7 @@ fun GistModel.toRealmModel(): Gist {
 
         return gist
     } else {
-        val gist = Realm.getDefaultInstance()
+        val gist = realm
                 .use {
                     it.where(Gist::class.java)
                             .equalTo(GistFields.ID, this.id)
