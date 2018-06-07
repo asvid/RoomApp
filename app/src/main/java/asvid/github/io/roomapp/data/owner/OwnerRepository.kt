@@ -19,7 +19,7 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     override fun delete(model: OwnerModel): Completable {
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).use {
-                it.executeTransaction {
+                it.executeTransactionAsync {
                     val ownerToDelete = it.where(Owner::class.java)
                             .equalTo(OwnerFields.ID, model.id)
                             .findFirstAsync()
@@ -33,7 +33,7 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     override fun deleteAll(models: Collection<OwnerModel>): Completable {
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).executeTransaction {
-                it.where(Owner::class.java).findAll().deleteAllFromRealm()
+                it.where(Owner::class.java).findAllAsync().deleteAllFromRealm()
             }
         }
     }
@@ -52,12 +52,14 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
 
 
     fun fetchAllOnce(): Single<Collection<OwnerModel>> {
-        return Single.fromCallable {
-            Realm.getInstance(realmConfiguration)
-                    .where(Owner::class.java).findAll()
+        return Single.create<Collection<OwnerModel>> {
+            val realm = Realm.getInstance(realmConfiguration)
+            it.onSuccess(realm.where(Owner::class.java)
+                    .findAll()
                     .map {
                         it.toModel()
-                    }
+                    })
+            realm.close()
         }
     }
 
@@ -73,10 +75,11 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     }
 
     override fun save(model: OwnerModel): Single<OwnerModel> {
-        return Single.fromCallable {
-            Realm.getInstance(realmConfiguration).executeTransactionAsync {
+        return Single.create<OwnerModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            realm.executeTransaction {
                 if (model.id == null) {
-                    var maxId = it.where(Owner::class.java).max("id")?.toLong()
+                    var maxId = it.where(Owner::class.java).max(OwnerFields.ID)?.toLong()
                     Timber.d("maxId: $maxId")
                     if (maxId == null) maxId = 0
                     model.id = ++maxId
@@ -84,7 +87,9 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
                 Timber.d("owner: $model")
                 it.copyToRealmOrUpdate(model.toRealmModel(it))
             }
-            model
+            it.onSuccess(model)
+            realm.close()
+
         }
     }
 

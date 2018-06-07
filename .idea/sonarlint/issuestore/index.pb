@@ -21,8 +21,6 @@ v
 Fapp/src/main/java/asvid/github/io/roomapp/data/mappers/OwnerMappers.kt,e\9\e9b514d5111ec306b11b953c6a53c6f1a78c322b
 `
 0app/src/main/java/asvid/github/io/roomapp/App.kt,b\0\b00b7d552979ac0b8243e051c7915e3d18ffaf0a
-j
-:app/src/main/java/asvid/github/io/roomapp/di/DataModule.kt,e\5\e59da49190e71167746d8016c72efb11ccd42a18
 u
 Eapp/src/main/java/asvid/github/io/roomapp/data/gist/GistRepository.kt,4\b\4b3801fbe27d61a92f43da14bc11f2ca05bae0a2
 w
@@ -41,3 +39,7 @@ l
 <app/src/main/java/asvid/github/io/roomapp/model/GistModel.kt,8\7\8710d65952554ac834d3e23d16adb29935c5ba21
 t
 Dapp/src/main/java/asvid/github/io/roomapp/views/gists/GistAdapter.kt,a\6\a69b38f674079f1da09bf7d9d1f055da1b5e2914
+u
+Eapp/src/main/java/asvid/github/io/roomapp/services/GistLoadService.kt,a\8\a82813b799acb1f3873c7cba4827c531916f297f
+V
+&buildSrc/src/main/java/Dependencies.kt,e\8\e814710098f674890a8b6d2265ec0d2432e04a92

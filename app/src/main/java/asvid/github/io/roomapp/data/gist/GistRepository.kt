@@ -20,7 +20,10 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).use {
-                it.where(Gist::class.java).equalTo(GistFields.ID, model.id).findFirstAsync().deleteFromRealm()
+                it.where(Gist::class.java)
+                        .equalTo(GistFields.ID, model.id)
+                        .findFirstAsync()
+                        .deleteFromRealm()
             }
         }
     }
@@ -29,7 +32,9 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
-                    it.where(Gist::class.java).findAll().deleteAllFromRealm()
+                    it.where(Gist::class.java)
+                            .findAllAsync()
+                            .deleteAllFromRealm()
                 }
             }
         }
@@ -67,7 +72,9 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
             Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
                     val gist = model.toRealmModel(it)
-                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirst()
+                    val owner = it.where(Owner::class.java)
+                            .equalTo(OwnerFields.ID, model.owner?.id)
+                            .findFirst()
                     owner?.gists?.add(gist)
                     it.copyToRealmOrUpdate(owner)
                     model.id = gist.id
