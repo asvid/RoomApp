@@ -21,6 +21,7 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
 
     private var items: List<GistModel>? = null
     val itemStarredSubject: PublishSubject<GistModel> = PublishSubject.create<GistModel>()
+    val itemClickedSubject: PublishSubject<GistModel> = PublishSubject.create<GistModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GistViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -45,6 +46,9 @@ class GistAdapter : RecyclerView.Adapter<GistViewHolder>() {
             items?.get(position)!!.starred = isChecked
             itemStarredSubject.onNext(items?.get(position)!!)
         })
+        holder.view.setOnClickListener {
+            itemClickedSubject.onNext(item!!)
+        }
     }
 
     fun updateData(list: List<GistModel>) {

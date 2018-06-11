@@ -6,7 +6,6 @@ import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.OwnerModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
 import io.realm.RealmConfiguration
@@ -19,7 +18,7 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     override fun delete(model: OwnerModel): Completable {
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).use {
-                it.executeTransactionAsync {
+                it.executeTransaction {
                     val ownerToDelete = it.where(Owner::class.java)
                             .equalTo(OwnerFields.ID, model.id)
                             .findFirstAsync()
@@ -33,7 +32,9 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     override fun deleteAll(models: Collection<OwnerModel>): Completable {
         return Completable.fromAction {
             Realm.getInstance(realmConfiguration).executeTransaction {
-                it.where(Owner::class.java).findAllAsync().deleteAllFromRealm()
+                it.where(Owner::class.java)
+                        .findAllAsync()
+                        .deleteAllFromRealm()
             }
         }
     }
@@ -49,7 +50,6 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
                     }
                 }
     }
-
 
     fun fetchAllOnce(): Single<Collection<OwnerModel>> {
         return Single.create<Collection<OwnerModel>> {
@@ -70,8 +70,14 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
         }
     }
 
-    override fun fetchById(id: Long): Maybe<OwnerModel> {
-        return Maybe.fromAction { realmAction { equalTo(OwnerFields.ID, id).findFirstAsync() } }
+    override fun fetchById(id: Long): Single<OwnerModel> {
+        return Single.create<OwnerModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            it.onSuccess(realm.where(Owner::class.java)
+                    .equalTo(OwnerFields.ID, id)
+                    .findFirst()!!.toModel())
+            realm.close()
+        }
     }
 
     override fun save(model: OwnerModel): Single<OwnerModel> {

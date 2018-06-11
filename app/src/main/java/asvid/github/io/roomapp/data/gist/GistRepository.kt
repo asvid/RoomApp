@@ -8,7 +8,6 @@ import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
 import io.realm.RealmConfiguration
@@ -60,27 +59,30 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
 
     }
 
-
-    override fun fetchById(id: Long): Maybe<GistModel> {
-        return Maybe.fromAction {
-            realmAction { equalTo(GistFields.ID, id).findFirstAsync() }
+    override fun fetchById(id: Long): Single<GistModel> {
+        return Single.create<GistModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            it.onSuccess(realm.where(Gist::class.java)
+                    .equalTo(GistFields.ID, id)
+                    .findFirst()!!.toModel())
+            realm.close()
         }
     }
 
     override fun save(model: GistModel): Single<GistModel> {
-        return Single.fromCallable {
-            Realm.getInstance(realmConfiguration).use {
-                it.executeTransaction {
-                    val gist = model.toRealmModel(it)
-                    val owner = it.where(Owner::class.java)
-                            .equalTo(OwnerFields.ID, model.owner?.id)
-                            .findFirst()
-                    owner?.gists?.add(gist)
-                    it.copyToRealmOrUpdate(owner)
-                    model.id = gist.id
-                }
+        return Single.create<GistModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            realm.executeTransaction {
+                val gist = model.toRealmModel(it)
+                val owner = it.where(Owner::class.java)
+                        .equalTo(OwnerFields.ID, model.owner?.id)
+                        .findFirst()
+                owner?.gists?.add(gist)
+                it.copyToRealmOrUpdate(owner)
+                model.id = gist.id
             }
-            model
+            it.onSuccess(model)
+            realm.close()
         }
     }
 
