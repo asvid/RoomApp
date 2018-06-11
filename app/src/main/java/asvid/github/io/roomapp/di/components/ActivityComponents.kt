@@ -1,4 +1,4 @@
-package asvid.github.io.roomapp.di
+package asvid.github.io.roomapp.di.components
 
 import asvid.github.io.roomapp.views.gists.MainActivity
 import asvid.github.io.roomapp.views.owners.OwnersActivity

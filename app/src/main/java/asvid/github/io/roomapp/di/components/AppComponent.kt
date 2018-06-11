@@ -1,6 +1,8 @@
-package asvid.github.io.roomapp.di
+package asvid.github.io.roomapp.di.components
 
 import asvid.github.io.roomapp.App
+import asvid.github.io.roomapp.di.ActivityBinder
+import asvid.github.io.roomapp.di.modules.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule

@@ -13,7 +13,7 @@ interface RxCrudRepository<M, I> : Repository<M, I> {
 
     fun fetchAll(): Flowable<Collection<M>>
 
-    fun fetchById(id: I): Maybe<M>
+    fun fetchById(id: I): Single<M>
 
     fun save(model: M): Single<M>
 

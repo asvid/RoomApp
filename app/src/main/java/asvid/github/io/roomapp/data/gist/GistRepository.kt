@@ -8,61 +8,81 @@ import asvid.github.io.roomapp.data.repository.RxCrudRepository
 import asvid.github.io.roomapp.model.GistModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.realm.Realm
-import timber.log.Timber
+import io.realm.RealmConfiguration
+import io.realm.RealmQuery
+import javax.inject.Inject
 
-class GistRepository : RxCrudRepository<GistModel, Long> {
+class GistRepository @Inject constructor(private val realmConfiguration: RealmConfiguration) : RxCrudRepository<GistModel, Long> {
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().use {
-                it.where(Gist::class.java).equalTo(GistFields.ID, model.id).findFirstAsync().deleteFromRealm()
+            Realm.getInstance(realmConfiguration).use {
+                it.where(Gist::class.java)
+                        .equalTo(GistFields.ID, model.id)
+                        .findFirstAsync()
+                        .deleteFromRealm()
             }
         }
     }
 
     override fun deleteAll(models: Collection<GistModel>): Completable {
         return Completable.fromAction {
-            Realm.getDefaultInstance().use {
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
-                    it.where(Gist::class.java).findAll().deleteAllFromRealm()
+                    it.where(Gist::class.java)
+                            .findAllAsync()
+                            .deleteAllFromRealm()
                 }
             }
         }
     }
 
-    private fun getGistRealm() = Realm.getDefaultInstance().where(Gist::class.java)
-
-    override fun fetchAll(): Flowable<Collection<GistModel>> {
-        return getGistRealm().findAll()
-                .let {
-                    it.asFlowable().map {
-                        it.map {
-                            it.toModel()
-                        }
-                    }
-                }
+    private fun <T> realmAction(block: RealmQuery<Gist>.() -> T): T {
+        return Realm.getInstance(realmConfiguration).use {
+            return@use it.where(Gist::class.java)
+                    .block()
+        }
     }
 
-    override fun fetchById(id: Long): Maybe<GistModel> {
-        return Maybe.fromAction { getGistRealm().equalTo(GistFields.ID, id).findFirstAsync() }
+    override fun fetchAll(): Flowable<Collection<GistModel>> {
+        return Realm.getInstance(realmConfiguration)
+                .where(Gist::class.java)
+                .findAll()
+                .asFlowable()
+                .map {
+                    it.map {
+                        it.toModel()
+                    }
+                }
+
+    }
+
+    override fun fetchById(id: Long): Single<GistModel> {
+        return Single.create<GistModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            it.onSuccess(realm.where(Gist::class.java)
+                    .equalTo(GistFields.ID, id)
+                    .findFirst()!!.toModel())
+            realm.close()
+        }
     }
 
     override fun save(model: GistModel): Single<GistModel> {
-        return Single.fromCallable {
-            Realm.getDefaultInstance().use {
-                it.refresh()
-                it.executeTransaction {
-                    val gist = model.toRealmModel()
-                    val owner = it.where(Owner::class.java).equalTo(OwnerFields.ID, model.owner?.id).findFirst()
-                    owner?.gists?.add(gist)
-                    it.copyToRealmOrUpdate(owner)
-                    model.id = gist.id
-                }
+        return Single.create<GistModel> {
+            val realm = Realm.getInstance(realmConfiguration)
+            realm.executeTransaction {
+                val gist = model.toRealmModel(it)
+                val owner = it.where(Owner::class.java)
+                        .equalTo(OwnerFields.ID, model.owner?.id)
+                        .findFirst()
+                owner?.gists?.add(gist)
+                it.copyToRealmOrUpdate(owner)
+                model.id = gist.id
             }
-            model
+            it.onSuccess(model)
+            realm.close()
         }
     }
 
@@ -73,9 +93,9 @@ class GistRepository : RxCrudRepository<GistModel, Long> {
 
     fun update(model: GistModel): Single<GistModel> {
         return Single.fromCallable {
-            Realm.getDefaultInstance().use {
+            Realm.getInstance(realmConfiguration).use {
                 it.executeTransaction {
-                    it.insertOrUpdate(model.toRealmModel())
+                    it.insertOrUpdate(model.toRealmModel(it))
                 }
             }
             model

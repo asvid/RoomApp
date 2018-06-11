@@ -16,7 +16,7 @@ open class Gist(
         @Required
         var id: Long? = null,
         var description: String = "",
-        @LinkingObjects(OwnerFields.GISTS.`$`)
+        @LinkingObjects("gists")
         val owner: RealmResults<Owner>? = null,
         var starred: Boolean = false,
         var date: Date = Date()

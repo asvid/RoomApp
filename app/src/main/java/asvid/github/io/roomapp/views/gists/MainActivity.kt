@@ -67,11 +67,19 @@ class MainActivity : AppCompatActivity() {
                     gistRepository.update(it).subscribe()
                     Log.d("MAIN_ACTIVITY", "star checkbox clicked: ${it}")
                 }
+
+        adapter.itemClickedSubject.subscribe {
+            val gistId = it.id
+            gistRepository.fetchById(gistId!!)
+                    .subscribe { next ->
+                        Toast.makeText(this, "Gist: $next", Toast.LENGTH_LONG).show()
+                    }
+        }
     }
 
     private fun handleGistsChange(onNext: Collection<GistModel>) {
         Log.d("MAIN_ACTIVITY", "Gists changed: $onNext")
-        Toast.makeText(this, "new gist!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "list changed!", Toast.LENGTH_SHORT).show()
         adapter.updateData(onNext.toList())
     }
 

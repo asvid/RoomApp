@@ -37,6 +37,8 @@ dependencies {
     implementation Support.constraint
     implementation 'com.google.code.gson:gson:2.8.2'
 
+    kapt 'dk.ilios:realmfieldnameshelper:1.1.1'
+
     //  pretty time
     implementation External.prettyTime
 
@@ -59,6 +61,5 @@ dependencies {
     kapt Apt.daggerCompiler
     kapt External.daggerProcessor
 
-    kapt 'dk.ilios:realmfieldnameshelper:1.1.1'
     implementation 'io.realm:android-adapters:2.1.1'
 }

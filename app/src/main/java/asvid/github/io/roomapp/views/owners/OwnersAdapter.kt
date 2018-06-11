@@ -15,6 +15,7 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
 
     private var items: List<OwnerModel>? = null
     val itemDeleteSubject: PublishSubject<OwnerModel> = PublishSubject.create<OwnerModel>()
+    val itemClickedSubject: PublishSubject<OwnerModel> = PublishSubject.create<OwnerModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OwnersAdapter.OwnerViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,6 +36,9 @@ class OwnersAdapter : RecyclerView.Adapter<OwnerViewHolder>() {
         holder.setLogin(item?.login)
         holder.setAvatarUrl()
         holder.setGistsNumber(item?.gists?.size)
+        holder.view.setOnClickListener {
+            itemClickedSubject.onNext(item!!)
+        }
     }
 
     fun updateData(list: List<OwnerModel>) {

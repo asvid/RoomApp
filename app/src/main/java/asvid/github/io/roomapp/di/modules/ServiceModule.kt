@@ -1,4 +1,4 @@
-package asvid.github.io.roomapp.di
+package asvid.github.io.roomapp.di.modules
 
 import asvid.github.io.roomapp.services.GistLoadService
 import dagger.Module

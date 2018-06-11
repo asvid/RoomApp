@@ -5,10 +5,10 @@ import asvid.github.io.roomapp.model.OwnerModel
 import io.realm.Realm
 import io.realm.RealmList
 
-fun OwnerModel.toRealmModel(): Owner {
-    val owner = Realm.getDefaultInstance().createObject(Owner::class.java, this.id)
+fun OwnerModel.toRealmModel(realm: Realm): Owner {
+    val owner = realm.createObject(Owner::class.java, this.id)
     owner.login = this.login
-    owner.gists = RealmList(*this.gists.map { it.toRealmModel() }?.toTypedArray())
+    owner.gists = RealmList(*this.gists.map { it.toRealmModel(realm) }.toTypedArray())
 
     return owner
 }

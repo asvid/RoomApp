@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import asvid.github.io.roomapp.R
 import asvid.github.io.roomapp.R.id
 import asvid.github.io.roomapp.data.owner.OwnerRepository
@@ -47,7 +48,8 @@ class OwnersActivity : AppCompatActivity() {
         ownersList.adapter = adapter
         ownersList.layoutManager = LinearLayoutManager(this)
 
-        ownersRepository.fetchAll().observeOn(AndroidSchedulers.mainThread())
+        ownersRepository.fetchAll()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { onNext -> handleOwnersChange(onNext.toList()) },
                         { onError -> Log.d("OWNERS", "error: $onError") },
@@ -57,6 +59,14 @@ class OwnersActivity : AppCompatActivity() {
         adapter.itemDeleteSubject.subscribe {
             Log.d("OWNERS", "deleting $it")
             ownersRepository.delete(it).subscribe()
+        }
+
+        adapter.itemClickedSubject.subscribe {
+            val ownerId = it.id
+            ownersRepository.fetchById(ownerId!!)
+                    .subscribe { next ->
+                        Toast.makeText(this, "Owner: $next", Toast.LENGTH_LONG).show()
+                    }
         }
     }
 

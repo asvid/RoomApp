@@ -1,6 +1,8 @@
 package asvid.github.io.roomapp.di
 
 import android.app.Activity
+import asvid.github.io.roomapp.di.components.MainActivityComponent
+import asvid.github.io.roomapp.di.components.OwnersActivityComponent
 import asvid.github.io.roomapp.views.gists.MainActivity
 import asvid.github.io.roomapp.views.owners.OwnersActivity
 import dagger.Binds
