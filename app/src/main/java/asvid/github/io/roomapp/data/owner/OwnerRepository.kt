@@ -22,6 +22,8 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
                     val ownerToDelete = it.where(Owner::class.java)
                             .equalTo(OwnerFields.ID, model.id)
                             .findFirstAsync()
+
+                    //        TODO(29) "kaskadowe" usuwanie Gistów wraz z Ownerem...
                     ownerToDelete.gists?.deleteAllFromRealm()
                     ownerToDelete.deleteFromRealm()
                 }
@@ -100,7 +102,7 @@ class OwnerRepository @Inject constructor(private val realmConfiguration: RealmC
     }
 
     override fun saveAll(models: Collection<OwnerModel>): Single<Collection<OwnerModel>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.create { }
     }
 
 }

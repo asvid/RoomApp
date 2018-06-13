@@ -24,12 +24,17 @@ class DataModule {
         Realm.init(context)
         return RealmConfiguration.Builder()
                 .schemaVersion(1)
+//        TODO(22) wstrzyknięcie utworzonej przez Daggera mapy migracji
                 .migration(Migration(versionMigrations))
                 .build()
     }
 
     @Singleton
     @Provides
+/*       TODO(23) wstrzyknięcie do repozytoriów konfiguracji Realma, żeby repo mogło sobie utworzyć potrzebną instancję bazy -
+         nie można wstrzyknąć instancji bazy, bo wtedy nie dałoby się korzystać z RX na osobnych wątkach,
+         obiektów Realma nie można przenosić między wątkami, podobnie jak instancji bazy i dostalibyśmy wyjątek
+*/
     fun gistRepository(realmConfiguration: RealmConfiguration): GistRepository = GistRepository(realmConfiguration)
 
     @Singleton

@@ -10,12 +10,15 @@ import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
 import java.util.*
 
+
+// TODO(1) klaza przechowywania w Realm
 @RealmClass
 open class Gist(
         @PrimaryKey
         @Required
         var id: Long? = null,
         var description: String = "",
+        // TODO(2) zwrotna relacja do Ownera, z wykorzystaniem automatycznie generowanej klasy z nazwami pól
         @LinkingObjects(OwnerFields.GISTS.`$`)
         val owner: RealmResults<Owner>? = null,
         var starred: Boolean = false,

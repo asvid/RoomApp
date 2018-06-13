@@ -82,15 +82,19 @@ class GistLoadService : Service() {
 
     private fun startLoadingData() {
         Timber.d("start creating gists")
+//        TODO(24) tworzenie losowego Gista w tle
         intervalRunner = Observable
                 .interval(10, TimeUnit.SECONDS)
                 .startWith(0)
                 .subscribeOn(IoScheduler())
                 .doOnNext {
+                    // TODO(25) pobierana jest zamknęta lista Ownerów a nie strumień - w tym miejscu nie interesują nas aktualizacje,
+                    // a dostęp do aktualizowanego strumienia poza wątkiem z Looperem powoduje wyjątek
                     ownerRepository.fetchAllOnce().subscribe { owners ->
                         Timber.d("onNext Owners list: $owners")
                         val owner = owners.getRandomElement() as OwnerModel
                         Timber.d("adding gist to owner: $owner")
+//                        TODO(26) losujemy Ownera z listy, generujemy losowo Gista i zapisujemy
                         owner.let {
                             val gist = GistModel(null, RandomStringGenerator.getString(), it, false, Date())
                             Timber.d("gist added from service: $gist")

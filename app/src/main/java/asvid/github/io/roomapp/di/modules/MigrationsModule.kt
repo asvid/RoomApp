@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.multibindings.IntKey
 import dagger.multibindings.IntoMap
 
+// TODO(21) moduł z migracjami do Realm, z których Dagger tworzy mapę <Wersja, Migracja>
 @Module
 class MigrationsModule {
 

@@ -18,6 +18,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
 
     override fun delete(model: GistModel): Completable {
         return Completable.fromAction {
+            // TODO(6) standardowa operacja na bazie bez zwracania wyniku
             Realm.getInstance(realmConfiguration).use {
                 it.where(Gist::class.java)
                         .equalTo(GistFields.ID, model.id)
@@ -39,6 +40,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
         }
     }
 
+    // TODO(7) akcja wykonująca blok na RealmQuery dla klasy Gist, a następnie zamykająca instancję bazy
     private fun <T> realmAction(block: RealmQuery<Gist>.() -> T): T {
         return Realm.getInstance(realmConfiguration).use {
             return@use it.where(Gist::class.java)
@@ -46,6 +48,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
         }
     }
 
+    // TODO(8) zwrócenie strumienia obiektów z przemapowaniem ich na typ domenowy
     override fun fetchAll(): Flowable<Collection<GistModel>> {
         return Realm.getInstance(realmConfiguration)
                 .where(Gist::class.java)
@@ -59,6 +62,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
 
     }
 
+    // TODO(9) zwrócenie konkretnego obiektu na podstaie jego ID z manualnym zamknięciem instancji bazy
     override fun fetchById(id: Long): Single<GistModel> {
         return Single.create<GistModel> {
             val realm = Realm.getInstance(realmConfiguration)
@@ -69,6 +73,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
         }
     }
 
+    // TODO(10) dodanie nowego Gista do bazy -> wyszukanie Ownera i dodanie mu do listy obiektu Gist a następnie zapis Ownera (a nie Gista :) )
     override fun save(model: GistModel): Single<GistModel> {
         return Single.create<GistModel> {
             val realm = Realm.getInstance(realmConfiguration)
@@ -87,8 +92,7 @@ class GistRepository @Inject constructor(private val realmConfiguration: RealmCo
     }
 
     override fun saveAll(models: Collection<GistModel>): Single<Collection<GistModel>> {
-        TODO(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.create { }
     }
 
     fun update(model: GistModel): Single<GistModel> {

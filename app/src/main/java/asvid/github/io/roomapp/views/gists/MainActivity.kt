@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         gistList.adapter = adapter
         gistList.layoutManager = LinearLayoutManager(this)
 
+//        TODO(26) subskrybcja na strumień Gistów, po zmianie w bazie przychodzi onNext()
         gistRepository.fetchAll()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -64,12 +65,14 @@ class MainActivity : AppCompatActivity() {
 
         adapter.itemStarredSubject
                 .subscribe {
+                    //        TODO(27) update bazy po kliknięciu w checkbox Gista
                     gistRepository.update(it).subscribe()
                     Log.d("MAIN_ACTIVITY", "star checkbox clicked: ${it}")
                 }
 
         adapter.itemClickedSubject.subscribe {
             val gistId = it.id
+            //        TODO(28) toast z Gistem po kliknięciu na element listy
             gistRepository.fetchById(gistId!!)
                     .subscribe { next ->
                         Toast.makeText(this, "Gist: $next", Toast.LENGTH_LONG).show()

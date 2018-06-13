@@ -61,7 +61,6 @@ class AddGistDialog : DialogFragment() {
             it.map { spinnerArray.add(it.login) }
 
             Timber.d("owners array: $spinnerArray")
-//            TODO("crashes after closing dialog for no reason...")
             val adapter = ArrayAdapter<String>(
                     activity, android.R.layout.simple_spinner_item, spinnerArray)
 
